@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.2.0.beta4'
 gem 'devise'
 gem 'omniauth-google-oauth2'
+gem 'rack-timeout'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
