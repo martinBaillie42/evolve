@@ -3,9 +3,24 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0.beta4'
-gem 'devise'
-gem 'omniauth-google-oauth2'
-gem 'rack-timeout'
+
+# User security features
+gem 'devise', '3.4.1'
+gem 'omniauth-google-oauth2', '0.2.6'
+
+# Used by Heroku to set the timeout value. TODO May not be needed?
+gem 'rack-timeout', '0.1.0'
+
+# Reference https://www.railstutorial.org/book/user_microposts Listing 11.66
+# Add fake data. Ref Listing 9.38
+# gem 'faker', '1.4.2'
+# Enables pagination. Ref Listing 9.40
+# gem 'will_paginate', '3.0.7'
+# Enables bootstrap pagination styles. Ref Listing 9.40
+# gem 'bootstrap-will_paginate', '0.0.10'
+# Provides interface between Rails Sass and Bootstraps LESS. Ref Listing 5.3
+gem 'bootstrap-sass', '3.2.0.0'
+
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
