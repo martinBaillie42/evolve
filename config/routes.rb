@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :properties
+
   # get 'users/auth/:provider/callback', to: 'sessions#create'
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
@@ -10,7 +12,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-  root :to => "static_pages#home"
+  root :to => "properties#index"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

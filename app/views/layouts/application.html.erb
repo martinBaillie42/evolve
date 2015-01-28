@@ -82,10 +82,12 @@
       </div>
 
       <footer>
+        <%= debug(params) if Rails.env.development? %>
         <p>&copy; Company 2015</p>
       </footer>
 
     </div> <!-- /container -->
+
 
   </body>
 </html>
