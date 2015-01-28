@@ -12,13 +12,16 @@ class User < ActiveRecord::Base
     unless user
       user = User.create(name: data["name"],
         email: data["email"],
-        password: Devise.friendly_token[0,20],
+        password: Devise.friendly_token[0,20]
+      )
+    end
+    # slightly inelegant but password is required, hence lack of DRYness
+    user.update(password: Devise.friendly_token[0,20],
         provider: access_token.provider,
         uid: access_token.uid,
         oauth_token: access_token.credentials.token,
         oauth_expires_at: Time.at(access_token.credentials.expires_at)
-      )
-    end
+    )
     user
   end
 end
