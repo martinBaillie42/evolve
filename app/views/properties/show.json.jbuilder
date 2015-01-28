@@ -1,1 +1,1 @@
-json.extract! @property, :id, :ga_id, :name, :website_url, :created_at, :updated_at
+json.extract! @property, :id, :tracking_id, :name, :website_url, :created_at, :updated_at

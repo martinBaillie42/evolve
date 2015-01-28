@@ -41,6 +41,6 @@ class PropertiesController < ApplicationController
     end
 
     def property_params
-      params.require(:property).permit(:ga_id, :name, :website_url)
+      params.require(:property).permit(:tracking_id, :name, :website_url)
     end
 end

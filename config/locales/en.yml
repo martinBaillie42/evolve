@@ -24,4 +24,4 @@ en:
   activerecord:
       attributes:
         property:
-          ga_id: "Tracking ID"
+          tracking_id: "Tracking ID"

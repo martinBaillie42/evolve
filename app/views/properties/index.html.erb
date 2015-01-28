@@ -6,7 +6,7 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:id) %></th>
-      <th><%= model_class.human_attribute_name(:ga_id) %></th>
+      <th><%= model_class.human_attribute_name(:tracking_id) %></th>
       <th><%= model_class.human_attribute_name(:name) %></th>
       <th><%= model_class.human_attribute_name(:website_url) %></th>
       <th><%= model_class.human_attribute_name(:created_at) %></th>
@@ -17,7 +17,7 @@
     <% @properties.each do |property| %>
       <tr>
         <td><%= property.id %></td>
-          <td><%= property.ga_id %></td>
+          <td><%= property.tracking_id %></td>
           <td><%= property.name %></td>
           <td><%= property.website_url %></td>
         <td><%=l property.created_at, format: :long %></td>
