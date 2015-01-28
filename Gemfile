@@ -19,7 +19,7 @@ gem 'rack-timeout', '0.1.0'
 # Enables bootstrap pagination styles. Ref Listing 9.40
 # gem 'bootstrap-will_paginate', '0.0.10'
 # Provides interface between Rails Sass and Bootstraps LESS. Ref Listing 5.3
-gem 'bootstrap-sass', '3.2.0.0'
+gem 'bootstrap-sass', '3.3.3'
 
 # Use postgresql as the database for Active Record
 gem 'pg'
