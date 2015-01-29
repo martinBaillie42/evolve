@@ -4,6 +4,21 @@ class PropertiesController < ApplicationController
 
   def index
     @properties = Property.all
+    # TODO Put this stuff somewhere sensible, probably a model and somewhere else.
+    token = current_user.oauth_token
+    client = OAuth2::Client.new(ENV['CLIENT_ID'], ENV['CLIENT_SECRET'], {
+                                                                 :authorize_url => 'https://accounts.google.com/o/oauth2/auth',
+                                                                 :token_url => 'https://accounts.google.com/o/oauth2/token'
+                                                             })
+    client.auth_code.authorize_url({
+                                       :scope => 'https://www.googleapis.com/auth/analytics.readonly',
+                                       :redirect_uri => 'http://localhost',
+                                       :access_type => 'offline'
+                                   })
+    access_token = OAuth2::AccessToken.from_hash client, {:access_token => token}
+    legato_user = Legato::User.new(access_token)
+    # profile = legato_user.accounts.first.profiles.first
+    byebug
     respond_with(@properties)
   end
 

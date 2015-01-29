@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
         password: Devise.friendly_token[0,20]
       )
     end
-    # slightly inelegant but password is required, hence lack of DRYness
+    # slightly inelegant but password is required when created, hence lack of DRYness
     user.update(password: Devise.friendly_token[0,20],
         provider: access_token.provider,
         uid: access_token.uid,

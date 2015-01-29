@@ -22,7 +22,8 @@ gem 'rack-timeout', '0.1.0'
 gem 'bootstrap-sass', '3.3.3'
 # Provides bootstrap scaffolding https://github.com/doabit/bootstrap-sass-extras
 gem 'bootstrap-sass-extras', '0.0.6'
-gem 'legato'
+# Access the GA API
+gem 'legato', '0.4.0'
 # Use postgresql as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
