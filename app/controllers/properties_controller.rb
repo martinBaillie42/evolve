@@ -1,24 +1,14 @@
 class PropertiesController < ApplicationController
   before_action :set_property, only: [:show, :edit, :update, :destroy]
+  before_action :set_token, only: [:index]
+  before_action :set_client, only: [:index]
+  before_action :set_access_token, only: [:index]
+  before_action :set_ga_user, only: [:index]
+
   respond_to :html, :xml, :json
 
   def index
     @properties = Property.all
-    # TODO Put this stuff somewhere sensible, probably a model and somewhere else.
-    token = current_user.oauth_token
-    client = OAuth2::Client.new(ENV['CLIENT_ID'], ENV['CLIENT_SECRET'], {
-                                                                 :authorize_url => 'https://accounts.google.com/o/oauth2/auth',
-                                                                 :token_url => 'https://accounts.google.com/o/oauth2/token'
-                                                             })
-    client.auth_code.authorize_url({
-                                       :scope => 'https://www.googleapis.com/auth/analytics.readonly',
-                                       :redirect_uri => 'http://localhost',
-                                       :access_type => 'offline'
-                                   })
-    access_token = OAuth2::AccessToken.from_hash client, {:access_token => token}
-    legato_user = Legato::User.new(access_token)
-    # profile = legato_user.accounts.first.profiles.first
-    byebug
     respond_with(@properties)
   end
 
@@ -57,5 +47,30 @@ class PropertiesController < ApplicationController
 
     def property_params
       params.require(:property).permit(:tracking_id, :name, :website_url)
+    end
+
+    # TODO Put set_token, set_client, set_access_token, and set_ga_user somewhere better
+    def set_token
+      @token = current_user.oauth_token
+    end
+
+    def set_client
+      @client = OAuth2::Client.new(ENV['CLIENT_ID'], ENV['CLIENT_SECRET'], {
+                                                      :authorize_url => 'https://accounts.google.com/o/oauth2/auth',
+                                                      :token_url => 'https://accounts.google.com/o/oauth2/token'
+                                                  })
+      @client.auth_code.authorize_url({
+                                         :scope => 'https://www.googleapis.com/auth/analytics.readonly',
+                                         :redirect_uri => 'http://localhost',
+                                         :access_type => 'offline'
+                                     })
+    end
+
+    def set_access_token
+      @access_token = OAuth2::AccessToken.from_hash @client, {:access_token => @token}
+    end
+
+    def set_ga_user
+      @ga_user = Legato::User.new(@access_token)
     end
 end
