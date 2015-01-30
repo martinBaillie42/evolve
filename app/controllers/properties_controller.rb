@@ -84,7 +84,7 @@ class PropertiesController < ApplicationController
         if @property.empty?
           Property.create(:tracking_id => p.id, :name => p.name, :website_url => p.website_url)
         else
-          prop_params = {:tracking_id => p.id, :name => "willy", :website_url => p.website_url}
+          prop_params = {:tracking_id => p.id, :name => p.name, :website_url => p.website_url}
           Property.update(@property.ids.first, prop_params)
         end
       end
