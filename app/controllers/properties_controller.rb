@@ -1,59 +1,46 @@
 class PropertiesController < ApplicationController
-  before_action :set_property, only: [:show, :edit, :update, :destroy]
   before_action :set_token, only: [:index]
   before_action :set_client, only: [:index]
   before_action :set_access_token, only: [:index]
   before_action :set_ga_user, only: [:index]
-  before_action :create_properties, only: [:index]
+  # removed destroy, new and edit
 
   respond_to :html, :xml, :json
 
   def index
+    @ga_user.web_properties.each do |p|
+      # TODO ensure user can only see the ones they are authorised to view
+      # TODO performance increase by making this a refresh button action?
+      @property = Property.find_by_tracking_id(p.id)
+      @property_params = {:tracking_id => p.id, :name => p.name, :website_url => p.website_url}
+      if @property.nil?
+        create
+      else
+        update
+      end
+    end
     @properties = Property.all
-    # byebug
     respond_with(@properties)
   end
 
-  def show
-    respond_with(@property)
-  end
-
-  def new
-    @property = Property.new
-    respond_with(@property)
-  end
-
-  def edit
-  end
-
   def create
-    @property = Property.new(property_params)
-    byebug
+    @property = Property.new(@property_params)
     @property.save
-    respond_with(@property)
   end
 
   def update
-    @property.update(property_params)
-    respond_with(@property)
+    @property.update(@property_params)
   end
 
-  def destroy
-    @property.destroy
+  def show
+    # TODO ensure a user can only see a web_property if they still have access
+    @property = Property.find(params[:id])
     respond_with(@property)
   end
 
   private
-    def set_property
-      @property = Property.find(params[:id])
-    end
-
-    def property_params
-      params.require(:property).permit(:tracking_id, :name, :website_url)
-    end
-
     # TODO Put set_token, set_client, set_access_token, and set_ga_user somewhere better.
-    # Probably in it's own controller. Maybe separate model, maybe User model.
+    # Probably in it's own controller. Maybe separate model, maybe User model. Probably to helper function(s)
     def set_token
       @token = current_user.oauth_token
     end
@@ -78,15 +65,4 @@ class PropertiesController < ApplicationController
       @ga_user = Legato::User.new(@access_token)
     end
 
-    def create_properties
-      @ga_user.web_properties.each do |p|
-        @property = Property.where(:tracking_id => p.id)
-        if @property.empty?
-          Property.create(:tracking_id => p.id, :name => p.name, :website_url => p.website_url)
-        else
-          prop_params = {:tracking_id => p.id, :name => p.name, :website_url => p.website_url}
-          Property.update(@property.ids.first, prop_params)
-        end
-      end
-    end
 end
