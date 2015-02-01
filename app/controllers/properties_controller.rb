@@ -35,24 +35,24 @@ class PropertiesController < ApplicationController
   end
 
   private
-  # TODO ga_user, oauth_access_token, oauth_client, oauth_token better as instance variables?
-  # TODO ga_user, oauth_access_token, oauth_client, oauth_token move to application controller or maybe session?
+    # TODO ga_user, oauth_access_token, oauth_client, oauth_token better as instance variables?
+    # TODO ga_user, oauth_access_token, oauth_client, oauth_token move to application controller or maybe session?
 
-  def ga_user
-    Legato::User.new(oauth2_access_token)
-  end
+    def ga_user
+      Legato::User.new(oauth2_access_token)
+    end
 
-  def oauth2_access_token
-    OAuth2::AccessToken.from_hash oauth2_client, {:access_token => oauth2_token}
-  end
+    def oauth2_access_token
+      OAuth2::AccessToken.from_hash oauth2_client, {:access_token => oauth2_token}
+    end
 
-  def oauth2_client
-    OAuth2::Client.new(ENV['CLIENT_ID'], ENV['CLIENT_SECRET'])
-  end
+    def oauth2_client
+      OAuth2::Client.new(ENV['CLIENT_ID'], ENV['CLIENT_SECRET'])
+    end
 
-  def oauth2_token
-    # TODO if oauth token expired use refresh token to get new one
-    current_user.oauth_token
-  end
+    def oauth2_token
+      # TODO if oauth token expired use refresh token to get new one
+      current_user.oauth_token
+    end
 
 end
