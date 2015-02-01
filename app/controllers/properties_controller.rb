@@ -42,6 +42,7 @@ class PropertiesController < ApplicationController
     # TODO Put set_token, set_client, set_access_token, and set_ga_user somewhere better.
     # Probably in it's own controller. Maybe separate model, maybe User model. Probably to helper function(s)
     def set_token
+      # TODO if oauth token expired use refresh token to get new one
       @token = current_user.oauth_token
     end
 
