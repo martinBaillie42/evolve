@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :property_users
+  # TODO does property_users require all the views, test etc that it currently has?
+  # resources :property_users
 
   resources :properties, only: [:index, :show]
 
