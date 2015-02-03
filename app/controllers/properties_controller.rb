@@ -34,6 +34,8 @@ class PropertiesController < ApplicationController
   end
 
   def update
+    # TODO There may be a better way to do this!
+    PropertyUser.create(property_id: @property.id, user_id: current_user.id)
     @property.update(@property_params)
   end
 
