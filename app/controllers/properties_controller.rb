@@ -8,7 +8,6 @@ class PropertiesController < ApplicationController
       # TODO ensure user can only see the ones they are authorised to view
       # TODO performance increase by making this a refresh button action?
       @property = Property.find_by_tracking_id(p.id)
-      # byebug
       @property_params = {
           tracking_id: p.id,
           name: p.name,
@@ -23,13 +22,12 @@ class PropertiesController < ApplicationController
         update
       end
     end
-    @properties = Property.all
+    @properties = current_user.properties
     respond_with(@properties)
   end
 
   def create
     @property = Property.new(@property_params)
-    # byebug
     @property.save
   end
 

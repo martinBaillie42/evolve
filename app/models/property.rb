@@ -6,11 +6,4 @@ class Property < ActiveRecord::Base
   # validates :tracking_id, presence: true, on: :update
   # Or maybe http://apidock.com/rails/ActiveRecord/Validations/ClassMethods/validates_uniqueness_of
 
-  # after_update :create_property_user
-  #
-  # private
-  #   def create_property_user
-  #     byebug
-  #     PropertyUser.create(user_id: 1, property_id: 1)
-  #   end
 end
