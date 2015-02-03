@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :property_users
+
   resources :properties, only: [:index, :show]
 
   # get 'users/auth/:provider/callback', to: 'sessions#create'
