@@ -4,7 +4,7 @@ class ExperimentsController < ApplicationController
 
   respond_to :html, :xml, :json
 
-  # TODO These are viewable even when not logged in. Fix this.
+  # TODO These are viewable even when not logged in. Fix this. Or maybe they're not. confused :-s
 
   def index
     @experiments = Experiment.all

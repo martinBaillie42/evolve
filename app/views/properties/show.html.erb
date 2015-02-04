@@ -18,9 +18,7 @@
       <dd><pre class="prettyprint"><%= @property.website_url %></pre></dd>
   </dl>
 </div>
-<% if @property.experiments.any? %>
-    <!--<ul class="experiments">-->
-      <%= render 'experiments/index' %>
-    <!--</ul>-->
-<% end %>
+
+<%= render 'experiments/index' %>
+
 

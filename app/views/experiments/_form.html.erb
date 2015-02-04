@@ -13,20 +13,20 @@
   </div>
   <div class="form-group">
     <%= f.label :date_from, :class => 'control-label col-md-2' %>
-    <div class="col-md-10">
-      <%= f.text_field :date_from, :class => 'text_field form-control' %>
+    <div class="col-md-10 form-inline">
+      <%= f.datetime_select :date_from, {}, :class => 'form-control' %>
     </div>
   </div>
   <div class="form-group">
     <%= f.label :date_to, :class => 'control-label col-md-2' %>
-    <div class="col-md-10">
-      <%= f.text_field :date_to, :class => 'text_field form-control' %>
+    <div class="col-md-10 form-inline">
+      <%= f.datetime_select :date_to, {}, :class => 'form-control' %>
     </div>
   </div>
   <div class="form-group">
     <%= f.label :live, :class => 'control-label col-md-2' %>
-    <div class="col-md-10">
-      <%= f.text_field :live, :class => 'text_field form-control' %>
+    <div class="col-md-1">
+      <%= f.check_box :live, :class => 'form-control' %>
     </div>
   </div>
   <div class="form-group">
@@ -44,7 +44,7 @@
   <div class="form-group">
     <%= f.label :js_code, :class => 'control-label col-md-2' %>
     <div class="col-md-10">
-      <%= f.text_field :js_code, :class => 'text_field form-control' %>
+      <%= f.text_area :js_code, rows: 5, :class => 'text_field form-control' %>
     </div>
   </div>
 
