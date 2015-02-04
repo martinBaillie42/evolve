@@ -1,44 +1,37 @@
-<p id="notice"><%= notice %></p>
+<%- model_class = Experiment -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
 
-<p>
-  <strong>Property:</strong>
-  <%= @experiment.property %>
-</p>
+<div class="fieldset">
+  <dl>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:property_id) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.property_id %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:name) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.name %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:date_from) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.date_from %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:date_to) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.date_to %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:live) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.live %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:page_url) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.page_url %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:unique_identifier) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.unique_identifier %></pre></dd>
+      <dt class="label label-default"><%= model_class.human_attribute_name(:js_code) %></dt>
+      <dd><pre class="prettyprint"><%= @experiment.js_code %></pre></dd>
+  </dl>
+</div>
 
-<p>
-  <strong>Name:</strong>
-  <%= @experiment.name %>
-</p>
-
-<p>
-  <strong>Date from:</strong>
-  <%= @experiment.date_from %>
-</p>
-
-<p>
-  <strong>Date to:</strong>
-  <%= @experiment.date_to %>
-</p>
-
-<p>
-  <strong>Live:</strong>
-  <%= @experiment.live %>
-</p>
-
-<p>
-  <strong>Page url:</strong>
-  <%= @experiment.page_url %>
-</p>
-
-<p>
-  <strong>Unique identifier:</strong>
-  <%= @experiment.unique_identifier %>
-</p>
-
-<p>
-  <strong>Js code:</strong>
-  <%= @experiment.js_code %>
-</p>
-
-<%= link_to 'Edit', edit_experiment_path(@experiment) %> |
-<%= link_to 'Back', experiments_path %>
+<div class="form-group">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              @property, :class => 'btn btn-default'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_experiment_path(@experiment), :class => 'btn btn-default' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              experiment_path(@experiment),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+</div>

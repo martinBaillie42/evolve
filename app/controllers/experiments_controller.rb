@@ -1,5 +1,10 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :destroy]
+  before_action :set_experiment, only: [:show, :edit, :update]
+  before_action :set_property, only: [:show, :edit, :update]
+
+  respond_to :html, :xml, :json
+
+  # TODO These are viewable even when not logged in. Fix this.
 
   def index
     @experiments = Experiment.all
@@ -11,7 +16,7 @@ class ExperimentsController < ApplicationController
   end
 
   def new
-    @experiment = Experiment.new
+    @experiment = Experiment.new(experiment_params)
     respond_with(@experiment)
   end
 
@@ -41,5 +46,9 @@ class ExperimentsController < ApplicationController
 
     def experiment_params
       params.require(:experiment).permit(:property_id, :name, :date_from, :date_to, :live, :page_url, :unique_identifier, :js_code)
+    end
+
+    def set_property
+      @property = @experiment.property
     end
 end

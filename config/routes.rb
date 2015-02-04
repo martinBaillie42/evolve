@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :experiments
+  resources :experiments, only: [:show, :new, :edit, :create, :update]
 
   # TODO does property_users require all the views, test etc that it currently has?
   # resources :property_users

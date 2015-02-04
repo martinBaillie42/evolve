@@ -40,6 +40,8 @@ class PropertiesController < ApplicationController
   def show
     # TODO ensure a user can only see a web_property if they still have access
     @property = Property.find(params[:id])
+    @experiments = @property.experiments
+    # byebug
     respond_with(@property)
   end
 
