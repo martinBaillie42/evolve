@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Property:</strong>
+  <%= @experiment.property %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @experiment.name %>
+</p>
+
+<p>
+  <strong>Date from:</strong>
+  <%= @experiment.date_from %>
+</p>
+
+<p>
+  <strong>Date to:</strong>
+  <%= @experiment.date_to %>
+</p>
+
+<p>
+  <strong>Live:</strong>
+  <%= @experiment.live %>
+</p>
+
+<p>
+  <strong>Page url:</strong>
+  <%= @experiment.page_url %>
+</p>
+
+<p>
+  <strong>Unique identifier:</strong>
+  <%= @experiment.unique_identifier %>
+</p>
+
+<p>
+  <strong>Js code:</strong>
+  <%= @experiment.js_code %>
+</p>
+
+<%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+<%= link_to 'Back', experiments_path %>

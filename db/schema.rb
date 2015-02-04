@@ -11,10 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150203171244) do
+ActiveRecord::Schema.define(version: 20150204013446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "experiments", force: true do |t|
+    t.integer  "property_id"
+    t.string   "name"
+    t.datetime "date_from"
+    t.datetime "date_to"
+    t.boolean  "live"
+    t.string   "page_url"
+    t.string   "unique_identifier"
+    t.text     "js_code"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "experiments", ["name"], name: "index_experiments_on_name", using: :btree
+  add_index "experiments", ["property_id", "name"], name: "index_experiments_on_property_id_and_name", unique: true, using: :btree
+  add_index "experiments", ["property_id"], name: "index_experiments_on_property_id", using: :btree
 
   create_table "permitted_users", force: true do |t|
     t.string   "email"

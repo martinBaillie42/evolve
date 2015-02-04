@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Experiments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Name</th>
+      <th>Date from</th>
+      <th>Date to</th>
+      <th>Live</th>
+      <th>Page url</th>
+      <th>Unique identifier</th>
+      <th>Js code</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @experiments.each do |experiment| %>
+      <tr>
+        <td><%= experiment.property %></td>
+        <td><%= experiment.name %></td>
+        <td><%= experiment.date_from %></td>
+        <td><%= experiment.date_to %></td>
+        <td><%= experiment.live %></td>
+        <td><%= experiment.page_url %></td>
+        <td><%= experiment.unique_identifier %></td>
+        <td><%= experiment.js_code %></td>
+        <td><%= link_to 'Show', experiment %></td>
+        <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+        <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Experiment', new_experiment_path %>

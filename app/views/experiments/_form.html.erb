@@ -1,0 +1,49 @@
+<%= form_for(@experiment) do |f| %>
+  <% if @experiment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
+
+      <ul>
+      <% @experiment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :property_id %><br>
+    <%= f.text_field :property_id %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :date_from %><br>
+    <%= f.datetime_select :date_from %>
+  </div>
+  <div class="field">
+    <%= f.label :date_to %><br>
+    <%= f.datetime_select :date_to %>
+  </div>
+  <div class="field">
+    <%= f.label :live %><br>
+    <%= f.check_box :live %>
+  </div>
+  <div class="field">
+    <%= f.label :page_url %><br>
+    <%= f.text_field :page_url %>
+  </div>
+  <div class="field">
+    <%= f.label :unique_identifier %><br>
+    <%= f.text_field :unique_identifier %>
+  </div>
+  <div class="field">
+    <%= f.label :js_code %><br>
+    <%= f.text_area :js_code %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
