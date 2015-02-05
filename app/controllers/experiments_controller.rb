@@ -12,6 +12,7 @@ class ExperimentsController < ApplicationController
   end
 
   def show
+    @variates = @experiment.variates
     respond_with(@experiment)
   end
 

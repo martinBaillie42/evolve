@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  experiment_id: 
+  variate_no: 1
+  js_code: MyText
+
+two:
+  experiment_id: 
+  variate_no: 1
+  js_code: MyText
