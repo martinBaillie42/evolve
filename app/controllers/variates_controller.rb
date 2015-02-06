@@ -2,6 +2,7 @@ class VariatesController < ApplicationController
   before_action :set_variate, only: [:show, :edit, :update, :destroy]
   before_action :set_experiment, only: [:show, :edit, :update]
   respond_to :html, :xml, :json
+  respond_to :js, only: :show
 
   def index
     @variates = Variate.all
