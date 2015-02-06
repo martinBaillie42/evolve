@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  # get 'proxies/get'
+  get 'proxy' => 'proxies#get'
   resources :variates
 
   resources :experiments, only: [:show, :new, :edit, :create, :update]
