@@ -8,10 +8,18 @@ class ProxiesController < ApplicationController
   def page
     uri = URI.parse(params.require(:page).permit(:url)[:url])
     response = Net::HTTP.get_response(uri)
-    proxy_uri = "#{request.scheme}://#{uri.host}/"
+    proxy_uri = "#{uri.scheme}://#{uri.host}/"
     # byebug
+    # Turn relative uris to absolute
     response.body = response.body.gsub(/(href=")(?<!\/)\/(?!\/)/, "href=\"#{proxy_uri}" )
     response.body = response.body.gsub(/(src=")(?<!\/)\/(?!\/)/, "src=\"#{proxy_uri}" )
+
+    # If the applications scheme is secure then amend the scheme of the uris in the iframe
+    if request.scheme == 'https'
+      response.body = response.body.gsub('href="http://', 'href="https://')
+      response.body = response.body.gsub('src="http://', 'src="https://' )
+    end
+
     # response.body = response.body.gsub('href=\"http://', 'href=\"https://' )
     # response.body = response.body.gsub("href='http://", 'href=\"https://' )
     # response.body = response.body.gsub('src=\"http://', 'src=\"https://' )
