@@ -16,8 +16,8 @@ class ProxiesController < ApplicationController
 
     # If the applications scheme is secure then amend the scheme of the uris in the iframe
     if request.scheme == 'https'
-      response.body = response.body.gsub('href="http://', 'href="https://')
-      response.body = response.body.gsub('src="http://', 'src="https://' )
+      response.body = response.body.gsub("href=\"http://#{uri.host}", "href=\"https://#{uri.host}")
+      response.body = response.body.gsub("src=\"http://#{uri.host}", "src=\"https://#{uri.host}")
     end
 
     # response.body = response.body.gsub('href=\"http://', 'href=\"https://' )
