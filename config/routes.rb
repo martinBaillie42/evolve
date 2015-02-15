@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
-  get 'proxy_page' => 'proxies#page'
-  get 'proxy_pagetwo' => 'proxies#pagetwo'
+  get 'proxy_html' => 'proxies#html'
+  get 'proxy_ajax' => 'proxies#ajax'
   resources :variates
 
   resources :experiments, only: [:show, :new, :edit, :create, :update]

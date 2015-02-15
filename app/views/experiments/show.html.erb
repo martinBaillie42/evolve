@@ -34,5 +34,5 @@
 <%= render 'variates/index' %>
 
 <h2>Original Page</h2>
-<iframe src="<%= raw proxy_page_path(page: {url: @experiment.page_url}) %>" id="foobar" style="width:100%; height:1000px;"></iframe>
+<iframe src="<%= raw proxy_html_path(proxy: {uri: @experiment.page_url}) %>" id="foobar" style="width:100%; height:1000px;"></iframe>
 
