@@ -31,8 +31,8 @@ class ProxiesController < ApplicationController
   # proxy for the ajax actions
   def ajax
 
-    path_string = @params[:uri]
-    uri_string = "http://www.phase-eight.com#{path_string}"
+    uri_string = @params[:uri]
+    # uri_string = "http://www.phase-eight.com#{path_string}"
     uri = construct_uri_object uri_string
     response = network_response uri
     logger.debug "XHR response type #{response.content_type}"

@@ -2,41 +2,54 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+# intercept all ajax calls and update url
+class AjaxUriIntercept
+  constructor: (@iframeId, @proxy, @domain) ->
+    @iframe = @getIframe()
+    @xmlHttpRequestOpen = @getOpenPrototype()
+    @updateOpenPrototype()
+
+  getIframe: =>
+    document.getElementById(@iframeId).contentWindow
+
+  getOpenPrototype: =>
+    @iframe.XMLHttpRequest.prototype.open
+
+  getScheme: =>
+    if window.location.protocol == 'http:' then 'http:' else 'https:'
+
+  updateOpenPrototype: =>
+    proxy = @proxy
+    domain = @domain
+    scheme = @getScheme()
+    @iframe.XMLHttpRequest.prototype.open = (method, url, async, user, pass) ->
+      url = "#{proxy}=#{scheme}//#{domain}#{url}"
+      @xmlHttpRequestOpen.call(this, method, url, async, user, pass)
+
+#     see this http://stackoverflow.com/questions/4917567/coffeescript-timer-and-this-pointer-on-callback
+# This could be put into a proxy class with the AjaxUriIntercept. Or both made sub classes of a main Ajax class.
+# Needs to be tested on Heroku to see if media subdomains need to be tested.
+pollHTML = (iframeId, proxy, domain, delay = 1000) ->
+  scheme = if window.location.protocol == 'http:' then 'http:' else 'https:'
+  setTimeout( () ->
+    $imgs = $("\##{iframeId}").contents().find('img').filter( (i) ->
+      uri = $(@).attr('src')
+      if not /^(\/proxy)/.test(uri)
+        if /^\/[^\/]/.test(uri)
+          $(@).attr('src', "#{proxy}=#{scheme}//#{domain}#{uri}")
+          console.log($(@).attr('src'))
+          true
+      false
+    )
+    if delay < 10000
+      pollHTML(iframeId, proxy, domain, delay * 2)
+  ,delay)
+
 
 $(document).ready ->
-  console.log 'page'
-  # intercept all ajax calls and update url
-  aaa = document.getElementById('foobar').contentWindow
-  open = aaa.XMLHttpRequest.prototype.open
-  # http://stackoverflow.com/questions/16959359/intercept-xmlhttprequest-and-modify-responsetext
-  aaa.XMLHttpRequest.prototype.open = (method, url, async, user, pass) ->
-    url = "/proxy_ajax?proxy%5Buri%5D=#{url}"
-    open.call(this, method, url, async, user, pass)
+  iframeId = 'variate'
+  proxyUri = '/proxy_ajax?proxy[uri]'
+  pageDomain = window.evolveMvt.pageDomain
+  experimentIframe = new AjaxUriIntercept(iframeId, proxyUri, pageDomain)
+  pollHTML(iframeId, proxyUri, pageDomain)
 
-  # check for and update relative urls in img tags. May not need to be polled
-#  (pollHTML = (delay = 1000) ->
-#    setTimeout( () ->
-#
-#      $imgs = $('#foobar').contents().find('img').filter( (i) ->
-#
-#      )
-#
-#      pollHTML(delay)
-#    ,delay)
-#  ).call(this);
-
-  setTimeout () ->
-    $imgs = $('#foobar').contents().find('img').filter( (i) ->
-      oneTrailingSlash = /^\/(?!\/)/
-      proxy = /^(\/proxy)/
-      if not $(this).attr('src').match(oneTrailingSlash)
-        false
-      else if not $(this).attr('src').match(proxy)
-        $(this).attr('src', "/proxy_ajax?proxy%5Buri%5D=#{$(this).attr('src')}")
-        console.log 'URL', $(this).attr('src')
-        true
-      else
-        false
-    )
-
-  , 5000

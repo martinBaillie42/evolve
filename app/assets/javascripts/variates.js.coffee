@@ -3,5 +3,5 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(document).ready ->
-  $.get('/variates/2.json').success (data) -> console.log data
-  $.get('/variates/2.js').success (data) -> console.log data
+#  $.get('/variates/2.json').success (data) -> console.log data
+#  $.get('/variates/2.js').success (data) -> console.log data

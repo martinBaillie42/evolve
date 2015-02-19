@@ -1,6 +1,7 @@
 class ExperimentsController < ApplicationController
   before_action :set_experiment, only: [:show, :edit, :update]
   before_action :set_property, only: [:show, :edit, :update]
+  before_action :set_uri_domain, only: [:show]
 
   respond_to :html, :xml, :json
 
@@ -51,5 +52,9 @@ class ExperimentsController < ApplicationController
 
     def set_property
       @property = @experiment.property
+    end
+
+    def set_uri_domain
+      @uri_domain = URI.parse(@experiment.page_url).host
     end
 end
