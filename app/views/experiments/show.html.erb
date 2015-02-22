@@ -34,8 +34,16 @@
 <%= render 'variates/index' %>
 
 <h2>Original Page</h2>
-<iframe src="<%= raw proxy_html_path(proxy: {uri: @experiment.page_url}) %>" id="variate" style="width:100%; height:1000px;"></iframe>
+<iframe src="<%= raw proxy_html_path(proxy: {uri: @experiment.page_url}) %>" id="variate" style="width:100%; height:1000px;">
 
+</iframe>
+<script>
+    function stopError(errorMsg, url, lineNumber) {
+        console.log("HELLO", errorMsg);
+        return true;
+    }
+    document.getElementById('variate').contentWindow.onerror = stopError;
+</script>
 <script>
   var evolveMvt = evolveMvt || {};
   evolveMvt.pageDomain = '<%= @uri_domain %>';

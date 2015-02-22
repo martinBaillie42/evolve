@@ -3,6 +3,8 @@ class ProxiesController < ApplicationController
 
   respond_to :html
   # TODO make any 404s from experiment or variant redirect to current experiment domain
+  # TODO Make this proxy work with css and js files (and images, etc)
+  # TOD Make all asset calls via the proxy
   # http://jerodsanto.net/2014/06/a-step-by-step-guide-to-bulletproof-404s-on-rails/
   # http://zepho.com/rails/books/advanced-rails-recipes_p1_0.pdf catch all 404s
 

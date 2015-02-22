@@ -1,7 +1,14 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
+#document.getElementById('variate').contentWindow.onerror (errorMsg, url, lineNumber)->
+#  alert(errorMsg)
+#stopError = ->
+#  return true;
 
+# TODO Convert to vanilla js. Too much hassle to use coffeescript.
+
+#window.onerror = stopError;
 # intercept all ajax calls and update url
 class AjaxUriIntercept
   constructor: (@iframeId, @proxy, @domain) ->
@@ -37,7 +44,6 @@ pollHTML = (iframeId, proxy, domain, delay = 1000) ->
       if not /^(\/proxy)/.test(uri)
         if /^\/[^\/]/.test(uri)
           $(@).attr('src', "#{proxy}=#{scheme}//#{domain}#{uri}")
-          console.log($(@).attr('src'))
           true
       false
     )
@@ -53,3 +59,6 @@ $(document).ready ->
   experimentIframe = new AjaxUriIntercept(iframeId, proxyUri, pageDomain)
   pollHTML(iframeId, proxyUri, pageDomain)
 
+#$('iframe').ready ->
+#  document.getElementById('variate').onerror = ->
+#    return: true
