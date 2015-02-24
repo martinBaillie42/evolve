@@ -55,7 +55,7 @@ pollHTML = (iframeId, proxy, domain, delay = 1000) ->
 $(document).ready ->
   iframeId = 'variate'
   proxyUri = '/proxy_ajax?proxy[uri]'
-  pageDomain = window.evolveMvt.pageDomain
+  pageDomain = window.emvt.pageDomain
   experimentIframe = new AjaxUriIntercept(iframeId, proxyUri, pageDomain)
   pollHTML(iframeId, proxyUri, pageDomain)
 

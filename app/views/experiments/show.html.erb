@@ -34,18 +34,22 @@
 <%= render 'variates/index' %>
 
 <h2>Original Page</h2>
-<iframe src="<%= raw proxy_html_path(proxy: {uri: @experiment.page_url}) %>" id="variate" style="width:100%; height:1000px;">
 
-</iframe>
+<div class="dropdown">
+  <iframe src="<%= raw proxy_html_path(proxy: {uri: @experiment.page_url}) %>" id="variate" style="width:100%; height:1000px;">
+
+  </iframe>
+</div>
+
 <script>
-    function stopError(errorMsg, url, lineNumber) {
-        console.log("HELLO", errorMsg);
-        return true;
-    }
-    document.getElementById('variate').contentWindow.onerror = stopError;
-</script>
-<script>
-  var evolveMvt = evolveMvt || {};
-  evolveMvt.pageDomain = '<%= @uri_domain %>';
+  var emvt = emvt || {};
+  emvt.pageDomain = '<%= @uri_domain %>';
 </script>
 
+<!-- TODO Aria classes? -->
+<ul class="dropdown-menu variate-menu" draggable="true">
+  <li><a tabindex="-1" href="#">text</a></li> <!-- Normal menu item -->
+  <li class="dropdown-header">text</li> <!-- Header -->
+  <li class="divider"></li> <!-- Header -->
+  <li class="disabled"><a tabindex="-1" href="#">text</a></li> <!-- Disabled menu item -->
+</ul>

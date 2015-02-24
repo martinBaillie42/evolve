@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require bootstrap-contextmenu
+//= require jquery-ui/draggable
 //= require_tree .
