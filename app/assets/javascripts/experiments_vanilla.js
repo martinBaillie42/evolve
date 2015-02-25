@@ -80,6 +80,12 @@ var emvt = emvt || {};
 
 })(emvt);
 
+// http://learn.jquery.com/events/introduction-to-custom-events/
+// http://learn.jquery.com/code-organization/concepts/
+// http://api.jquery.com/on/#event-names
+// https://gist.github.com/cowboy/661855
+// http://addyosmani.com/resources/essentialjsdesignpatterns/book/#singletonpatternjavascript
+
 // http://learn.jquery.com/plugins/basic-plugin-creation/
 //(function( $ ) {
 //
