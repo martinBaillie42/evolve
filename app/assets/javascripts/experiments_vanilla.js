@@ -2,12 +2,61 @@
 // All this logic will automatically be available in application.js.
 var emvt = emvt || {};
 
-
-
-(function (emvt) {
+(function () {
     "use strict";
     $(window).on('load', function () {
-        emvt.targetPage = emvt.targetPage || $('#variate').contents();
+
+        emvt.targetPageDOM = emvt.targetPageDOM || $('#variate').contents();
+        emvt.ui = emvt.ui || {};
+
+        emvt.pointer = (function (targetPageDOM) {
+
+            var $body = targetPageDOM.find('body'),
+                $allElements = $('*', targetPageDOM);
+
+            $body.on('mouseenter', function(e) {
+                $.publish('enterDOM/pointer/emvt', this);
+            });
+
+            $body.on('mouseleave', function() {
+                $.publish('leaveDOM/pointer/emvt');
+            });
+
+            $allElements.on('click', function (event) {
+                event.preventDefault();
+                $.publish('clickDOM/pointer/emvt', event.target);
+            });
+
+        })(emvt.targetPageDOM);
+
+        emvt.ui.pointer = (function(){
+
+            // too complex, just need to set this!
+            $.subscribe('enterDOM/pointer/emvt', function(e, that){
+                $(that).css('cursor', 'pointer');
+            });
+
+        })();
+
+        emvt.ui.element = (function () {
+
+            var currentSelectedElement;
+
+            $.subscribe('clickDOM/pointer/emvt', function(e, clickedElement){
+                debugger;
+                //if (currentSelectedElement !== clickedElement) {
+                    //$(currentSelectedElement).css('outline-width', '0px');
+                    //currentSelectedElement = clickedElement;
+                    $(clickedElement).css('outline', '#00f solid 1px');
+                //}
+                //emvt.clickedElement = $(e.target);
+                //$('.emvt_blue', emvt.targetPageDOM).css('outline-width', '0px').removeClass('emvt_blue');
+                //emvt.clickedElement.css('outline', '#00f solid 1px').removeClass('emvt_red').addClass('emvt_blue');
+                //emvt.initialiseMenu();
+            });
+
+        })();
+
         emvt.clickedElement = emvt.clickedElement || $();
 
         // TODO Is typeof function reliable?
@@ -36,32 +85,25 @@ var emvt = emvt || {};
             //debugger;
         };
 
-        // Change cursor to pointer when entering iframe, back to default on way out
-        emvt.targetPage.find('body').on('mouseenter', function() {
-                $(this).css('cursor', 'pointer'); // TODO does not always work. See RSS links on blog.
-            }).on('mouseleave', function () {
-                $('body').css('cursor', 'default');
-            });
-
         // Highlight and add a class to the current hover over element
-        $('*', emvt.targetPage).on('mouseenter', function() {
+        $('*', emvt.targetPageDOM).on('mouseenter', function() {
             if (emvt.highlightOn){
-                $('.emvt_red', emvt.targetPage).removeClass('emvt_red').not('.emvt_blue').css('outline-width', '0px');
+                $('.emvt_red', emvt.targetPageDOM).removeClass('emvt_red').not('.emvt_blue').css('outline-width', '0px');
                 $(this).addClass('emvt_red').css('outline', '#f00 solid 1px');
                 $(this).on('mouseout', function() {
-                    $('.emvt_blue', emvt.targetPage).css('outline', '#00f solid 1px');
+                    $('.emvt_blue', emvt.targetPageDOM).css('outline', '#00f solid 1px');
                 });
             }
         });
 
         // set the current object when mouse is clicked
-        emvt.targetPage.on('click', function (e) {
-            e.preventDefault();
-            emvt.clickedElement = $(e.target);
-            $('.emvt_blue', emvt.targetPage).css('outline-width', '0px').removeClass('emvt_blue');
-            emvt.clickedElement.css('outline', '#00f solid 1px').removeClass('emvt_red').addClass('emvt_blue');
-            emvt.initialiseMenu();
-        });
+        //emvt.targetPageDOM.on('click', function (e) {
+        //    e.preventDefault();
+        //    emvt.clickedElement = $(e.target);
+        //    $('.emvt_blue', emvt.targetPageDOM).css('outline-width', '0px').removeClass('emvt_blue');
+        //    emvt.clickedElement.css('outline', '#00f solid 1px').removeClass('emvt_red').addClass('emvt_blue');
+        //    emvt.initialiseMenu();
+        //});
 
         emvt.highlightOn = true;
 
@@ -78,7 +120,7 @@ var emvt = emvt || {};
         });
     });
 
-})(emvt);
+})();
 
 // http://learn.jquery.com/events/introduction-to-custom-events/
 // http://learn.jquery.com/code-organization/concepts/
