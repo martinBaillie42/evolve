@@ -16,4 +16,5 @@
 //= require bootstrap-sprockets
 //= require bootstrap-contextmenu
 //= require jquery-ui/draggable
+//= require tiny-pubsub
 //= require_tree .
