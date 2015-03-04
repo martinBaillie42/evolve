@@ -18,6 +18,7 @@ var emvt = emvt || {};
                 $.publish('enterDOM/pointer/emvt', this);
             });
 
+            // Not currently used
             $body.on('mouseleave', function() {
                 $.publish('leaveDOM/pointer/emvt');
             });
@@ -27,83 +28,84 @@ var emvt = emvt || {};
                 $.publish('clickDOM/pointer/emvt', event.target);
             });
 
+            $allElements.on('mouseover', function(event) {
+                //console.log('mouseover', event.target);
+                $.publish('overElement/pointer/emvt', event.target);
+            });
+
+            // Not used currently
+            $allElements.on('mouseout', function(event) {
+                //console.log('mouseout', event.target);
+                //$.publish('exitElement/pointer/emvt', event.target);
+            });
+
         })(emvt.targetPageDOM);
 
-        emvt.ui.pointer = (function(){
+        emvt.ui.pointer = (function(targetPageDOM){
 
-            // too complex, just need to set this!
             $.subscribe('enterDOM/pointer/emvt', function(e, that){
                 $(that).css('cursor', 'pointer');
             });
 
-        })();
+        })(emvt.targetPageDOM);
 
-        emvt.ui.element = (function () {
+        emvt.ui.element = (function (targetPageDOM) {
 
-            var currentSelectedElement;
+            // Could insert some CSS into the HTML to control this styling
 
             $.subscribe('clickDOM/pointer/emvt', function(e, clickedElement){
-                debugger;
-                //if (currentSelectedElement !== clickedElement) {
-                    //$(currentSelectedElement).css('outline-width', '0px');
-                    //currentSelectedElement = clickedElement;
-                    $(clickedElement).css('outline', '#00f solid 1px');
-                //}
-                //emvt.clickedElement = $(e.target);
-                //$('.emvt_blue', emvt.targetPageDOM).css('outline-width', '0px').removeClass('emvt_blue');
-                //emvt.clickedElement.css('outline', '#00f solid 1px').removeClass('emvt_red').addClass('emvt_blue');
-                //emvt.initialiseMenu();
+                $('*', targetPageDOM).css('outline', '#00f solid 0px');
+                $(clickedElement).css('outline', '#00f solid 1px');
             });
 
-        })();
+            $.subscribe('overElement/pointer/emvt', function(e, overElement){
+                $('*', targetPageDOM).css('outline', '0');
+                $(overElement).css('outline', '#f00 solid 1px');
+            });
 
-        emvt.clickedElement = emvt.clickedElement || $();
+            // Not used currently
+            $.subscribe('exitElement/pointer/emvt', function(e, exitedElement){
+                //$('*', targetPageDOM).css('outline', '#f00 solid 0px');
+                $(exitedElement).css('outline', '#f00 solid 0px');
+            });
 
-        // TODO Is typeof function reliable?
-        emvt.initialiseMenu = function () {
-            //console.log(emvt.clickedElement);
-            var tagName = emvt.clickedElement.prop('tagName').toLowerCase();
-            var id = emvt.clickedElement.attr('id');
-            var classes = emvt.clickedElement.attr('class');
-            var parent = emvt.clickedElement.parent();
-            var firstChild = emvt.clickedElement.children()[0]; // this might play up on only one return
-            var text = emvt.clickedElement.contents().filter(function() {
+        })(emvt.targetPageDOM);
+
+        emvt.selectedElement = (function (){
+            // TODO: Public getters and setters?
+            var currentElement = {};
+            $.subscribe('clickDOM/pointer/emvt', function(e, clickedElement){
+                //console.log(clickedElement);
+                currentElement.tagName = $(clickedElement).prop('tagName').toLowerCase();
+                currentElement.id = $(clickedElement).attr('id');
+                currentElement.classes = $(clickedElement).attr('class');
+                currentElement.parent = $(clickedElement).parent();
+                currentElement.firstChild = $(clickedElement).children()[0]; // this might play up on only one return
+                currentElement.text = $(clickedElement).contents().filter(function() {
                     // http://stackoverflow.com/questions/5913031/jquery-get-text-but-not-the-text-in-span
                     return this.nodeType == 3;
                 }).text();
-            console.log('id', id);
-            console.log('classes', classes);
-            console.log('parent', parent);
-            console.log('firstChild', firstChild);
-            console.log('text', text);
-            $('span', '[data-emvt="menu-tagname"]').text(tagName);
-            $('span', '[data-emvt="menu-id"]').text(id);
-            $('span', '[data-emvt="menu-classes"]').text(classes);
-            $('span', '[data-emvt="menu-parent"]').text(parent.prop('tagName').toLowerCase() + parent.attr('id') + parent.attr('class'));
-            $('span', '[data-emvt="menu-firstchild"]').text(firstChild);
-            $('span', '[data-emvt="menu-text"]').text(text);
-            //debugger;
-        };
+            //    TODO: Maybe add change event here?
+            });
+            return currentElement;
+        })();
 
-        // Highlight and add a class to the current hover over element
-        $('*', emvt.targetPageDOM).on('mouseenter', function() {
-            if (emvt.highlightOn){
-                $('.emvt_red', emvt.targetPageDOM).removeClass('emvt_red').not('.emvt_blue').css('outline-width', '0px');
-                $(this).addClass('emvt_red').css('outline', '#f00 solid 1px');
-                $(this).on('mouseout', function() {
-                    $('.emvt_blue', emvt.targetPageDOM).css('outline', '#00f solid 1px');
-                });
-            }
-        });
+        emvt.ui.elementMenu = (function (emvt){
+            // TODO https://github.com/petersirka/jquery.bindings ?
+            console.log(emvt);
+            $.subscribe('clickDOM/pointer/emvt', function(e) {
+                $('span', '[data-emvt="menu-tagname"]').text(emvt.selectedElement.tagName);
+                $('span', '[data-emvt="menu-id"]').text(emvt.selectedElement.id);
+                $('span', '[data-emvt="menu-classes"]').text(emvt.selectedElement.classes);
+                $('span', '[data-emvt="menu-parent"]').text(emvt.selectedElement.parent.prop('tagName').toLowerCase() +
+                                                            emvt.selectedElement.parent.attr('id') +
+                                                            emvt.selectedElement.parent.attr('class'));
+                $('span', '[data-emvt="menu-firstchild"]').text(emvt.selectedElement.firstChild);
+                $('span', '[data-emvt="menu-text"]').text(emvt.selectedElement.text);
+            });
+        })(emvt);
 
-        // set the current object when mouse is clicked
-        //emvt.targetPageDOM.on('click', function (e) {
-        //    e.preventDefault();
-        //    emvt.clickedElement = $(e.target);
-        //    $('.emvt_blue', emvt.targetPageDOM).css('outline-width', '0px').removeClass('emvt_blue');
-        //    emvt.clickedElement.css('outline', '#00f solid 1px').removeClass('emvt_red').addClass('emvt_blue');
-        //    emvt.initialiseMenu();
-        //});
+        emvt.clickedElement = emvt.clickedElement || $();
 
         emvt.highlightOn = true;
 
