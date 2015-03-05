@@ -12,7 +12,12 @@ var emvt = emvt || {};
         emvt.pointer = (function (targetPageDOM) {
 
             var $body = targetPageDOM.find('body'),
-                $allElements = $('*', targetPageDOM);
+                $allElements = $('*', targetPageDOM),
+                $menuItems = $('.variate-menu');
+
+            $menuItems.on('click', function(event) {
+                $.publish('menuClick/pointer/emvt', event.target);
+            });
 
             $body.on('mouseenter', function(e) {
                 $.publish('enterDOM/pointer/emvt', this);
@@ -75,7 +80,6 @@ var emvt = emvt || {};
             // TODO: Public getters and setters?
             var currentElement = {};
             $.subscribe('clickDOM/pointer/emvt', function(e, clickedElement){
-                //console.log(clickedElement);
                 currentElement.tagName = $(clickedElement).prop('tagName').toLowerCase();
                 currentElement.id = $(clickedElement).attr('id');
                 currentElement.classes = $(clickedElement).attr('class');
@@ -87,22 +91,37 @@ var emvt = emvt || {};
                 }).text();
             //    TODO: Maybe add change event here?
             });
+
+            // TODO when menu clicked change current element, ie parent element
             return currentElement;
         })();
 
         emvt.ui.elementMenu = (function (emvt){
             // TODO https://github.com/petersirka/jquery.bindings ?
-            console.log(emvt);
+            // TODO: the menu now requires events that will allow it to update the current element
+
+
             $.subscribe('clickDOM/pointer/emvt', function(e) {
-                $('span', '[data-emvt="menu-tagname"]').text(emvt.selectedElement.tagName);
-                $('span', '[data-emvt="menu-id"]').text(emvt.selectedElement.id);
-                $('span', '[data-emvt="menu-classes"]').text(emvt.selectedElement.classes);
-                $('span', '[data-emvt="menu-parent"]').text(emvt.selectedElement.parent.prop('tagName').toLowerCase() +
-                                                            emvt.selectedElement.parent.attr('id') +
-                                                            emvt.selectedElement.parent.attr('class'));
-                $('span', '[data-emvt="menu-firstchild"]').text(emvt.selectedElement.firstChild);
-                $('span', '[data-emvt="menu-text"]').text(emvt.selectedElement.text);
+                var se = emvt.selectedElement,
+                    tagName = se.tagName,
+                    id = se.id,
+                    classes = se.classes,
+                    parentTagName = se.parent.prop('tagName').toLowerCase(),
+                    parentId = (se.parent.attr('id') !== undefined) ? '#' + se.parent.attr('id') : '',
+                    parentClass = (se.parent.attr('class') !== undefined) ? '.' + se.parent.attr('class').replace(/\s/g, '.') : '',
+                    firstChildTagName = (se.firstChild !== undefined) ? $(se.firstChild).prop('tagName').toLowerCase() : '',
+                    firstChildId = ($(se.firstChild).attr('id') !== undefined) ? '#' + $(se.firstChild).attr('id') : '',
+                    firstChildClass = ($(se.firstChild).attr('class') !== undefined) ? '.' + $(se.firstChild).attr('class').replace(' ', '.') : '',
+                    text = se.text;
+                $('span.text', '[data-emvt="menu-tagname"]').text(tagName);
+                $('span.text', '[data-emvt="menu-id"]').text(id);
+                $('span.text', '[data-emvt="menu-classes"]').text(classes);
+                $('span.text', '[data-emvt="menu-parent"]').text(parentTagName + parentId + parentClass );
+                $('span.text', '[data-emvt="menu-firstchild"]').text(firstChildTagName + firstChildId + firstChildClass);
+                $('span.text', '[data-emvt="menu-text"]').text(text);
             });
+
+
         })(emvt);
 
         emvt.clickedElement = emvt.clickedElement || $();
