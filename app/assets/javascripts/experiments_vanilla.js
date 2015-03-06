@@ -13,10 +13,10 @@ var emvt = emvt || {};
 
             var $body = targetPageDOM.find('body'),
                 $allElements = $('*', targetPageDOM),
-                $menuItems = $('.variate-menu');
+                $menuSelectElement = $('[data-emvt="select-element"]','.variate-menu');
 
-            $menuItems.on('click', function(event) {
-                $.publish('menuClick/pointer/emvt', event.target);
+            $menuSelectElement.on('click', function(event) {
+                $.publish('elementSelected/menu/emvt', event.target);
             });
 
             $body.on('mouseenter', function(e) {
@@ -80,6 +80,7 @@ var emvt = emvt || {};
             // TODO: Public getters and setters?
             var currentElement = {};
             $.subscribe('clickDOM/pointer/emvt', function(e, clickedElement){
+                //this needs to be cahnged to jsut the actaul jq object
                 currentElement.tagName = $(clickedElement).prop('tagName').toLowerCase();
                 currentElement.id = $(clickedElement).attr('id');
                 currentElement.classes = $(clickedElement).attr('class');
@@ -92,6 +93,9 @@ var emvt = emvt || {};
             //    TODO: Maybe add change event here?
             });
 
+            $.subscribe('elementSelected/menu/emvt', function(e, dataElementAttr){
+            //    Set the paretn, child, etc elemetn here.
+            });
             // TODO when menu clicked change current element, ie parent element
             return currentElement;
         })();
