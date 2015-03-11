@@ -25,7 +25,7 @@ var emvt = emvt || {};
 
         })();
 
-        emvt.publish = (function () {
+        emvt.Publish = (function () {
 
             function event(jqueryObject, eventType, message){
                 jqueryObject.on(eventType, function(event) {
@@ -34,11 +34,11 @@ var emvt = emvt || {};
             }
 
             return {
-                event: event
+                init: event
             }
         })();
 
-        emvt.subscribe = (function () {
+        emvt.Subscribe = (function () {
 
             function event(message, callback, callbackParametersObject){
                 $.subscribe(message, function(subscribeEvent, publishEvent, eventElement, callbackParametersObject) {
@@ -47,17 +47,17 @@ var emvt = emvt || {};
             }
 
             return {
-                event: event
+                init: event
             }
         })();
 
-        var testEvent = new emvt.publish.event($('*','body'), 'click', 'hello');
+        var testEvent = new emvt.Publish.init($('*','body'), 'click', 'hello');
 
         function hello (subscribeEvent, publishEvent, eventElement, callbackParametersObject) {
             console.log(subscribeEvent, publishEvent, eventElement);
         }
 
-        var testEvent = new emvt.subscribe.event('hello', hello);
+        var testEvent = new emvt.Subscribe.init('hello', hello);
 
     });
 })();
