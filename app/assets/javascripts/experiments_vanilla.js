@@ -27,7 +27,7 @@ var emvt = emvt || {};
 
         emvt.Publish = (function () {
 
-            function event(jqueryObject, eventType, message){
+            function event(message, eventType, jqueryObject){
                 jqueryObject.on(eventType, function(event) {
                     $.publish(message, [event, this]);
                 });
@@ -51,13 +51,19 @@ var emvt = emvt || {};
             }
         })();
 
-        var testEvent = new emvt.Publish.init($('*','body'), 'click', 'hello');
+        var testPub1 = new emvt.Publish.init('hello1', 'click',  $('*','body'));
+        var testPub2 = new emvt.Publish.init('hello2', 'click',  $('*','body'));
 
-        function hello (subscribeEvent, publishEvent, eventElement, callbackParametersObject) {
-            console.log(subscribeEvent, publishEvent, eventElement);
+        function hello1 (subscribeEvent, publishEvent, eventElement, callbackParametersObject) {
+            console.log('hello1');
         }
 
-        var testEvent = new emvt.Subscribe.init('hello', hello);
+        function hello2 (subscribeEvent, publishEvent, eventElement, callbackParametersObject) {
+            console.log('hello2');
+        }
+
+        var testEvent1 = new emvt.Subscribe.init('hello1', hello1);
+        var testEvent2 = new emvt.Subscribe.init('hello2', hello2);
 
     });
 })();
