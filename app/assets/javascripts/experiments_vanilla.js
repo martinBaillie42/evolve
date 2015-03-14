@@ -6,9 +6,11 @@ var emvt = emvt || {};
 emvt.Publish = (function () {
 
     function event(message, eventType, jqueryObject, options){
+
         if(options) {
             var preventDefault = options.preventDefault || false;
         }
+
         jqueryObject.on(eventType, function(event) {
             if (preventDefault === true) {
                 event.preventDefault();
@@ -86,7 +88,7 @@ emvt.Subscribe = (function () {
 
                 pubEnterDom = new Publish.init('enterDom', 'mouseenter',  variateBody),
                 pubOverElement = new Publish.init('overElement', 'mouseover',  allElements),
-                pubSelectElement = new Publish.init('selectElement', 'click',  allElements, {preventDefault: true});
+                pubSelectElement = new Publish.init('selectElement', 'click',  allElements, {"preventDefault": true});
 
         })(emvt.Publish, emvt.variateDom);
 
@@ -105,7 +107,9 @@ emvt.Subscribe = (function () {
                 },
 
                 selectElement = function(subscribeEvent, publishEvent, eventElement) {
-                    setElement($(publishEvent.target));
+                    if (eventElement === publishEvent.target) {
+                        setElement($(eventElement));
+                    }
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
