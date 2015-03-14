@@ -52,6 +52,7 @@ emvt.Subscribe = (function () {
         emvt.variatePageUI = (function (Subscribe, variateDom) {
 
             var allElements = variateDom.find('*'),
+                body = variateDom.find('body'),
                 hoverCss = '#f00 solid 1px',
                 selectCss = '#00f solid 1px',
                 selectClass = 'emvt_selected-element',
@@ -62,18 +63,29 @@ emvt.Subscribe = (function () {
                 },
 
                 overElement = function  (subscribeEvent, publishEvent, eventElement, allElements) {
-                    allElements.not(selectedClass).css('outline-width', '0px');
+                    clearHoverHighlights(allElements);
                     $(publishEvent.target).not(selectedClass).css('outline', hoverCss);
                 },
 
+                clearHoverHighlights = function (allElements) {
+                    $(allElements).not(selectedClass).css('outline-width', '0px');
+                },
+
+                leaveDom = function (subscribeEvent, publishEvent, eventElement, allElements) {
+                    clearHoverHighlights(allElements);
+                },
+
                 clickElement = function (subscribeEvent, publishEvent, eventElement, allElements) {
-                    allElements.css('outline-width', '0px').removeClass(selectClass);
-                    $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
+                    if ($(eventElement).parents('body').html() === body.html()) {
+                        allElements.css('outline-width', '0px').removeClass(selectClass);
+                        $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
+                    }
                 },
 
                 subEnterDom = new Subscribe.init('enterDom', enterDom),
                 subOverElement = new Subscribe.init('overElement', overElement, allElements),
-                subSelectElement = new Subscribe.init('selectElement', clickElement, allElements);
+                subSelectElement = new Subscribe.init('selectElement', clickElement, allElements),
+                subLeaveDom = new Subscribe.init('leaveDom', leaveDom, allElements);
 
         })(emvt.Subscribe, emvt.variateDom);
 
@@ -88,7 +100,8 @@ emvt.Subscribe = (function () {
 
                 pubEnterDom = new Publish.init('enterDom', 'mouseenter',  variateBody),
                 pubOverElement = new Publish.init('overElement', 'mouseover',  allElements),
-                pubSelectElement = new Publish.init('selectElement', 'click',  allElements, {"preventDefault": true});
+                pubSelectElement = new Publish.init('selectElement', 'click',  allElements, {"preventDefault": true}),
+                pubLeaveDom = new Publish.init('leaveDom', 'mouseleave',  variateBody);
 
         })(emvt.Publish, emvt.variateDom);
 
@@ -96,9 +109,12 @@ emvt.Subscribe = (function () {
 
         emvt.currentElement = (function (Subscribe) {
 
+
+
             var currentElement,
 
                 setElement = function(selectedElement) {
+                    console.log(selectedElement);
                     currentElement = selectedElement;
                 },
 
@@ -107,24 +123,66 @@ emvt.Subscribe = (function () {
                 },
 
                 selectElement = function(subscribeEvent, publishEvent, eventElement) {
-                    if (eventElement === publishEvent.target) {
+                    if ($(eventElement).data('emvt-relative')) {
+                        selectRelation($(eventElement).data('emvt-relative'));
+                    } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative')) {
                         setElement($(eventElement));
                     }
+                },
+
+                selectRelation = function (relative) {
+                   emvt.currentElement[relative]();
+                },
+
+                selectParent = function() {
+                    console.log("selectParent");
+                },
+
+                selectFirstChild = function() {
+
+                },
+
+                selectNextSibling = function() {
+
+                },
+
+                selectPreviousSibling = function() {
+
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
 
             return {
-                setElement: setElement,
-                getElement: getElement
-            }
+                //setElement: setElement,
+                getElement: getElement,
+                selectParent: selectParent,
+                selectFirstChild: selectFirstChild,
+                selectNextSibling: selectNextSibling,
+                selectPreviousSibling: selectPreviousSibling
+            };
         })(emvt.Subscribe);
 
 
 
-        emvt.ElementMenu = (function () {
+        emvt.ElementMenu = (function (currentElement, Subscribe, Publish) {
 
-        })();
+            var selectElement = function(subscribeEvent, publishEvent, eventElement) {
+                    //console.log(currentElement.getElement());
+                },
+
+                selectRelatedElement = $("li", '.variate-menu'),
+                //selectRelatedElement = $("[data-emvt='menu-parent']"),
+
+
+                subSelectElement = new Subscribe.init('selectElement', selectElement),
+
+                pubSelectElement = new Publish.init('selectElement', 'click',  selectRelatedElement);
+
+            return {
+
+            };
+
+        })(emvt.currentElement, emvt.Subscribe, emvt.Publish);
 
 
 

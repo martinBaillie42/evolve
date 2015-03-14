@@ -48,14 +48,17 @@
 
 <!-- TODO Aria classes? -->
 <ul class="dropdown-menu variate-menu" draggable="true">
-  <li><a tabindex="-1" href="#">text</a></li> <!-- Normal menu item -->
-  <li data-emvt="menu-parent"><span class="glyphicon glyphicon-menu-up"></span> <span class="text"></span></li>
-  <li data-emvt="menu-firstchild"><span class="glyphicon glyphicon-menu-down"></span> <span class="text"></span></li>
-  <li data-emvt="menu-tagname">tagname: <span class="text"></span></li>
-  <li data-emvt="menu-id">id: <span class="text"></span></li>
-  <li data-emvt="menu-classes">classes: <span class="text"></span></li>
-  <li data-emvt="menu-text">text: <span class="text"></span></li>
-  <li class="dropdown-header">text</li> <!-- Header -->
-  <li class="divider"></li> <!-- Header -->
-  <li class="disabled"><a tabindex="-1" href="#">text</a></li> <!-- Disabled menu item -->
+  <li class="dropdown-header">Element Menu</li> <!-- Header -->
+  <li data-emvt-relative="selectParent"><span class="glyphicon glyphicon-menu-up"></span> <span class="text"></span></li>
 </ul>
+<!--
+<li><a tabindex="-1" href="#">text</a></li> &lt;!&ndash; Normal menu item &ndash;&gt;
+<li data-emvt="menu-parent"><span class="glyphicon glyphicon-menu-up"></span> <span class="text"></span></li>
+<li data-emvt="menu-firstchild"><span class="glyphicon glyphicon-menu-down"></span> <span class="text"></span></li>
+<li data-emvt="menu-tagname">tagname: <span class="text"></span></li>
+<li data-emvt="menu-id">id: <span class="text"></span></li>
+<li data-emvt="menu-classes">classes: <span class="text"></span></li>
+<li data-emvt="menu-text">text: <span class="text"></span></li>
+<li class="divider"></li> &lt;!&ndash; Header &ndash;&gt;
+<li class="disabled"><a tabindex="-1" href="#">text</a></li> &lt;!&ndash; Disabled menu item &ndash;&gt;
+-->
