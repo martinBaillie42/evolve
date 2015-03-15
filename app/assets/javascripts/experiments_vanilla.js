@@ -10,9 +10,9 @@ emvt.Publish = (function () {
         if(options) {
             var preventDefault = options.preventDefault || false;
         }
-
+        //console.log(jqueryObject);
         jqueryObject.on(eventType, function(event) {
-            if (preventDefault === true) {
+            if (preventDefault) {
                 event.preventDefault();
             }
             $.publish(message, [event, this]);
@@ -75,16 +75,25 @@ emvt.Subscribe = (function () {
                     clearHoverHighlights(allElements);
                 },
 
-                clickElement = function (subscribeEvent, publishEvent, eventElement, allElements) {
-                    if ($(eventElement).parents('body').html() === body.html()) {
-                        allElements.css('outline-width', '0px').removeClass(selectClass);
+                clickElement = function (subscribeEvent, publishEvent, eventElement, callBackParams) {
+                    if (callBackParams) {
+                        var allElements = callBackParams.allElements;
+                    }
+                    var previousElement;
+                    allElements.css('outline-width', '0px').removeClass(selectClass);
+                    if ($(eventElement).data('emvt-relative')) {
+                        setTimeout(function(){
+                            $(emvt.currentElement.getElement()).css('outline', selectCss).addClass(selectClass);
+                        },100);
+                    } else {
                         $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
                     }
+
                 },
 
                 subEnterDom = new Subscribe.init('enterDom', enterDom),
                 subOverElement = new Subscribe.init('overElement', overElement, allElements),
-                subSelectElement = new Subscribe.init('selectElement', clickElement, allElements),
+                subSelectElement = new Subscribe.init('selectElement', clickElement, {allElements: allElements}),
                 subLeaveDom = new Subscribe.init('leaveDom', leaveDom, allElements);
 
         })(emvt.Subscribe, emvt.variateDom);
@@ -107,11 +116,9 @@ emvt.Subscribe = (function () {
 
 
 
-        emvt.currentElement = (function (Subscribe) {
+        emvt.currentElement = (function (Subscribe, variateDom) {
 
-
-
-            var currentElement,
+            var currentElement = variateDom.find('body'),
 
                 setElement = function(selectedElement) {
                     console.log(selectedElement);
@@ -131,23 +138,27 @@ emvt.Subscribe = (function () {
                 },
 
                 selectRelation = function (relative) {
-                   emvt.currentElement[relative]();
+                    emvt.currentElement[relative]();
                 },
 
                 selectParent = function() {
-                    console.log("selectParent");
+                    var isBody = getElement().prop('tagName') === 'BODY';
+                    setElement(isBody ? getElement() : getElement().parent() );
                 },
 
                 selectFirstChild = function() {
-
+                    var firstChild = getElement().children().first();
+                    setElement(firstChild.length > 0 ? firstChild : getElement());
                 },
 
                 selectNextSibling = function() {
-
+                    var nextSibling = getElement().next();
+                    setElement(nextSibling.length > 0 ? getElement().next() : getElement());
                 },
 
                 selectPreviousSibling = function() {
-
+                    var previousSibling = getElement().prev();
+                    setElement(previousSibling.length > 0 ? getElement().prev() : getElement());
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
@@ -160,7 +171,7 @@ emvt.Subscribe = (function () {
                 selectNextSibling: selectNextSibling,
                 selectPreviousSibling: selectPreviousSibling
             };
-        })(emvt.Subscribe);
+        })(emvt.Subscribe, emvt.variateDom);
 
 
 
@@ -176,7 +187,7 @@ emvt.Subscribe = (function () {
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement),
 
-                pubSelectElement = new Publish.init('selectElement', 'click',  selectRelatedElement);
+                pubSelectElement = new Publish.init('selectElement', 'click', selectRelatedElement);
 
             return {
 
