@@ -83,17 +83,18 @@ emvt.Subscribe = (function () {
                     var previousElement,
                         backgroundColor,
                         boxShadow;
-                    allElements.css('outline-width', '0px').removeClass(selectClass);
+
                     if ($(eventElement).data('emvt-relative')) {
                         // TODO add scroll to if element not on screen
                         // TODO make this called by message from object?
+                        allElements.css('outline-width', '0px').removeClass(selectClass);
                         setTimeout(function(){
-                            backgroundColor = (emvt.currentElement.getElement()).css('background-color');
-                            boxShadow = (emvt.currentElement.getElement()).css('box-shadow');
+                            backgroundColor = $(emvt.currentElement.getElement()).css('background-color');
+                            boxShadow = $(emvt.currentElement.getElement()).css('box-shadow');
                             $(emvt.currentElement.getElement()).css('outline', selectCss).addClass(selectClass);
-                            (emvt.currentElement.getElement()).animate(
-                                {"background-color": $.Color("rgb(0, 0, 255, 0.1)"),
-                                "box-shadow": "0px 0px 31px 0px rgb(0,0,255,0.4)"},
+                            $(emvt.currentElement.getElement()).animate(
+                                {"background-color": $.Color("rgba(0, 0, 255, 0.1)"),
+                                "box-shadow": "0px 0px 31px 0px rgba(0,0,255,0.4)"},
                                 100, function(){
                                     $(this).animate(
                                         {"background-color": $.Color(backgroundColor),
@@ -102,8 +103,18 @@ emvt.Subscribe = (function () {
                                         500);
                             });
                         },100);
-                    } else {
+                    } else if (publishEvent.target === eventElement) {
+                        allElements.css('outline-width', '0px').removeClass(selectClass);
+                        boxShadow = $(publishEvent.target).css('box-shadow');
+                        $(publishEvent.target).css('box-shadow', "0px 0px 31px 0px rgba(0,0,255,0.0)");
                         $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
+                        $(publishEvent.target).animate(
+                            {"box-shadow": "0px 0px 31px 0px rgba(0,0,255,0.4)"},
+                            100, function(){
+                                $(this).animate(
+                                    {"box-shadow": boxShadow},
+                                    500);
+                            });
                     }
 
                 },
@@ -149,9 +160,28 @@ emvt.Subscribe = (function () {
                 selectElement = function(subscribeEvent, publishEvent, eventElement) {
                     if ($(eventElement).data('emvt-relative')) {
                         selectRelation($(eventElement).data('emvt-relative'));
-                    } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative')) {
+                    } else if ($(eventElement).data('emvt-move-element')) {
+                        moveElement($(eventElement).data('emvt-move-element'));
+                    } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative') && !$(eventElement).data('emvt-move-element')) {
                         setElement($(eventElement));
                     }
+                },
+
+
+
+                moveElement = function (direction) {
+                    var current = getElement();
+                    //debugger;
+                    emvt.currentElement[direction](current);
+                },
+
+                moveUp = function (current) {
+                    var grandParent = current.parent().parent(),
+                        isBodyParent = current.parent().prop('tagName') === 'BODY';
+                    if(!isBodyParent) {
+                        current.detach().prependTo(grandParent);
+                    }
+
                 },
 
                 selectRelation = function (relative) {
@@ -169,13 +199,17 @@ emvt.Subscribe = (function () {
                 },
 
                 selectNextSibling = function() {
-                    var nextSibling = getElement().next();
-                    setElement(nextSibling.length > 0 ? getElement().next() : getElement().siblings().first());
+                    var current = getElement(),
+                        nextSibling = current.next(),
+                        firstSibling = current.siblings().first();
+                    setElement(nextSibling.length > 0 ? nextSibling : firstSibling.length > 0 ? firstSibling : current);
                 },
 
                 selectPreviousSibling = function() {
-                    var previousSibling = getElement().prev();
-                    setElement(previousSibling.length > 0 ? getElement().prev() : getElement().siblings().last());
+                    var current = getElement(),
+                        previousSibling = current.prev(),
+                        lastSibling = current.siblings().last();
+                    setElement(previousSibling.length > 0 ? previousSibling : lastSibling.length > 0 ? lastSibling : current);
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
@@ -186,7 +220,8 @@ emvt.Subscribe = (function () {
                 selectParent: selectParent,
                 selectFirstChild: selectFirstChild,
                 selectNextSibling: selectNextSibling,
-                selectPreviousSibling: selectPreviousSibling
+                selectPreviousSibling: selectPreviousSibling,
+                moveUp: moveUp
             };
         })(emvt.Subscribe, emvt.variateDom);
 
@@ -200,7 +235,6 @@ emvt.Subscribe = (function () {
 
                 selectRelatedElement = $("li", '.variate-menu'),
                 //selectRelatedElement = $("[data-emvt='menu-parent']"),
-
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement),
 
