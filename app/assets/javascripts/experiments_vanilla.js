@@ -64,10 +64,19 @@ emvt.Subscribe = (function () {
                 },
 
                 overElement = function  (subscribeEvent, publishEvent, eventElement, allElements) {
+                    var dataElement = $(eventElement).data('emvt-element');
                     clearHoverHighlights(allElements);
-                    console.log();
-                    console.log();
-                    $(publishEvent.target).not(selectedClass).css('outline', hoverCss);
+                    //debugger;
+                    if (dataElement && dataElement.indexOf('move') === 0) {
+                        if (dataElement === 'moveUp') {
+                            emvt.currentElement.getGrandParent().not(selectedClass).css('outline', hoverCss);
+                        }
+                        //console.log($(publishEvent.target));
+                        //console.log(eventElement);
+                    } else {
+                        $(publishEvent.target).not(selectedClass).css('outline', hoverCss);
+                    }
+
                 },
 
                 clearHoverHighlights = function (allElements) {
@@ -167,11 +176,17 @@ emvt.Subscribe = (function () {
                     }
                 },
 
+                getGrandParent = function(){
+                    var current = getElement();
+                    return current.parent().prop('tagName') === 'BODY' ? false : current.parent().parent();
+                },
+
                 move = {
                     "up":       function (current) {
-                                    var grandParent = current.parent().parent(),
-                                        isParentBody = current.parent().prop('tagName') === 'BODY';
-                                    if(!isParentBody) {
+                                    //var grandParent = current.parent().parent(),
+                                    //    isParentBody = current.parent().prop('tagName') === 'BODY';
+                                    var grandParent = getGrandParent()
+                                    if(grandParent) {
                                         current.detach().prependTo(grandParent);
                                     }
                                 },
@@ -240,8 +255,8 @@ emvt.Subscribe = (function () {
                 selectParent: selectParent,
                 selectFirstChild: selectFirstChild,
                 selectNextSibling: selectNextSibling,
-                selectPreviousSibling: selectPreviousSibling
-                //moveUp: moveUp,
+                selectPreviousSibling: selectPreviousSibling,
+                getGrandParent: getGrandParent
                 //moveRight: moveRight,
                 //moveLeft: moveLeft
             };
@@ -256,7 +271,7 @@ emvt.Subscribe = (function () {
                 },
 
                 selectRelatedElement = $("li", '.variate-menu'),
-                hoverMoveElement = $('li[data-emvt-element^="move"', '.variate-menu'),
+                hoverMoveElement = $("li[data-emvt-element^='move']", '.variate-menu'),
                 //selectRelatedElement = $("[data-emvt='menu-parent']"),
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement),
