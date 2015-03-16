@@ -80,11 +80,27 @@ emvt.Subscribe = (function () {
                     if (callBackParams) {
                         var allElements = callBackParams.allElements;
                     }
-                    var previousElement;
+                    var previousElement,
+                        backgroundColor,
+                        boxShadow;
                     allElements.css('outline-width', '0px').removeClass(selectClass);
                     if ($(eventElement).data('emvt-relative')) {
+                        // TODO add scroll to if element not on screen
+                        // TODO make this called by message from object?
                         setTimeout(function(){
+                            backgroundColor = (emvt.currentElement.getElement()).css('background-color');
+                            boxShadow = (emvt.currentElement.getElement()).css('box-shadow');
                             $(emvt.currentElement.getElement()).css('outline', selectCss).addClass(selectClass);
+                            (emvt.currentElement.getElement()).animate(
+                                {"background-color": $.Color("rgb(0, 0, 255, 0.1)"),
+                                "box-shadow": "0px 0px 31px 0px rgb(0,0,255,0.4)"},
+                                100, function(){
+                                    $(this).animate(
+                                        {"background-color": $.Color(backgroundColor),
+                                        "box-shadow": boxShadow
+                                        },
+                                        500);
+                            });
                         },100);
                     } else {
                         $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
@@ -154,12 +170,12 @@ emvt.Subscribe = (function () {
 
                 selectNextSibling = function() {
                     var nextSibling = getElement().next();
-                    setElement(nextSibling.length > 0 ? getElement().next() : getElement());
+                    setElement(nextSibling.length > 0 ? getElement().next() : getElement().siblings().first());
                 },
 
                 selectPreviousSibling = function() {
                     var previousSibling = getElement().prev();
-                    setElement(previousSibling.length > 0 ? getElement().prev() : getElement());
+                    setElement(previousSibling.length > 0 ? getElement().prev() : getElement().siblings().last());
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
