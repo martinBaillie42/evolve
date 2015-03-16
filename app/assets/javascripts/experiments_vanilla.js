@@ -20,7 +20,8 @@ emvt.Publish = (function () {
     }
 
     return {
-        init: event
+        init: event // ,
+        //trigger: trigger
     }
 })();
 
