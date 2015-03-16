@@ -65,6 +65,8 @@ emvt.Subscribe = (function () {
 
                 overElement = function  (subscribeEvent, publishEvent, eventElement, allElements) {
                     clearHoverHighlights(allElements);
+                    console.log();
+                    console.log();
                     $(publishEvent.target).not(selectedClass).css('outline', hoverCss);
                 },
 
@@ -83,7 +85,6 @@ emvt.Subscribe = (function () {
                     var previousElement,
                         backgroundColor,
                         boxShadow;
-
                     if ($(eventElement).data('emvt-relative')) {
                         // TODO add scroll to if element not on screen
                         // TODO make this called by message from object?
@@ -103,7 +104,7 @@ emvt.Subscribe = (function () {
                                         500);
                             });
                         },100);
-                    } else if (publishEvent.target === eventElement) {
+                    } else if (publishEvent.target === eventElement && !$(eventElement).data('emvt-element')) {
                         allElements.css('outline-width', '0px').removeClass(selectClass);
                         boxShadow = $(publishEvent.target).css('box-shadow');
                         $(publishEvent.target).css('box-shadow', "0px 0px 31px 0px rgba(0,0,255,0.0)");
@@ -145,7 +146,6 @@ emvt.Subscribe = (function () {
 
 
         emvt.currentElement = (function (Subscribe, variateDom) {
-
             var currentElement = variateDom.find('body'),
 
                 setElement = function(selectedElement) {
@@ -160,28 +160,47 @@ emvt.Subscribe = (function () {
                 selectElement = function(subscribeEvent, publishEvent, eventElement) {
                     if ($(eventElement).data('emvt-relative')) {
                         selectRelation($(eventElement).data('emvt-relative'));
-                    } else if ($(eventElement).data('emvt-move-element')) {
-                        moveElement($(eventElement).data('emvt-move-element'));
-                    } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative') && !$(eventElement).data('emvt-move-element')) {
+                    } else if ($(eventElement).data('emvt-element')) {
+                        move.element($(eventElement).data('emvt-element'));
+                    } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative') && !$(eventElement).data('emvt-element')) {
                         setElement($(eventElement));
                     }
                 },
 
-
-
-                moveElement = function (direction) {
-                    var current = getElement();
-                    //debugger;
-                    emvt.currentElement[direction](current);
-                },
-
-                moveUp = function (current) {
-                    var grandParent = current.parent().parent(),
-                        isBodyParent = current.parent().prop('tagName') === 'BODY';
-                    if(!isBodyParent) {
-                        current.detach().prependTo(grandParent);
-                    }
-
+                move = {
+                    "up":       function (current) {
+                                    var grandParent = current.parent().parent(),
+                                        isParentBody = current.parent().prop('tagName') === 'BODY';
+                                    if(!isParentBody) {
+                                        current.detach().prependTo(grandParent);
+                                    }
+                                },
+                    "down":    function (current) {
+                                    var next = current.next(),
+                                        isNext = next.length > 0;
+                                    if (isNext) {
+                                        current.detach().prependTo(next);
+                                    }
+                                },
+                    "right":    function (current) {
+                                    var next = current.next(),
+                                        isNext = next.length > 0;
+                                    if (isNext) {
+                                        current.detach().insertAfter(next);
+                                    }
+                                },
+                    "left":     function (current) {
+                                    var prev = current.prev(),
+                                        isPrev = prev.length > 0;
+                                    if (isPrev) {
+                                        current.detach().insertBefore(prev);
+                                    }
+                                },
+                    "element":  function (direction) {
+                                    var current = getElement(),
+                                        dir = direction.replace('move', '').toLowerCase();
+                                    move[dir](current);
+                                }
                 },
 
                 selectRelation = function (relative) {
@@ -214,14 +233,17 @@ emvt.Subscribe = (function () {
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
 
+
             return {
                 //setElement: setElement,
                 getElement: getElement,
                 selectParent: selectParent,
                 selectFirstChild: selectFirstChild,
                 selectNextSibling: selectNextSibling,
-                selectPreviousSibling: selectPreviousSibling,
-                moveUp: moveUp
+                selectPreviousSibling: selectPreviousSibling
+                //moveUp: moveUp,
+                //moveRight: moveRight,
+                //moveLeft: moveLeft
             };
         })(emvt.Subscribe, emvt.variateDom);
 
@@ -234,11 +256,14 @@ emvt.Subscribe = (function () {
                 },
 
                 selectRelatedElement = $("li", '.variate-menu'),
+                hoverMoveElement = $('li[data-emvt-element^="move"', '.variate-menu'),
                 //selectRelatedElement = $("[data-emvt='menu-parent']"),
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement),
 
-                pubSelectElement = new Publish.init('selectElement', 'click', selectRelatedElement);
+                pubSelectElement = new Publish.init('selectElement', 'click', selectRelatedElement),
+
+                pubHoverElement = new Publish.init('overElement', 'mouseover', hoverMoveElement);
 
             return {
 
