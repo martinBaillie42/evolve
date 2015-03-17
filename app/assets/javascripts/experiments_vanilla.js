@@ -63,13 +63,15 @@ emvt.Subscribe = (function () {
                     $(eventElement).css('cursor', 'pointer');
                 },
 
+
+
                 overElement = function  (subscribeEvent, publishEvent, eventElement, allElements) {
                     var dataElement = $(eventElement).data('emvt-element');
                     clearHoverHighlights(allElements);
                     //debugger;
                     if (dataElement && dataElement.indexOf('move') === 0) {
                         if (dataElement === 'moveUp') {
-                            emvt.currentElement.getGrandParent().not(selectedClass).css('outline', hoverCss);
+                            emvt.currentElement.getGrandParent()/*.not(selectedClass)*/.css('outline', hoverCss);
                         }
                         //console.log($(publishEvent.target));
                         //console.log(eventElement);
@@ -87,44 +89,50 @@ emvt.Subscribe = (function () {
                     clearHoverHighlights(allElements);
                 },
 
+                highlightFlash = function(highlightElement, select, backgroundFlash) {
+                    var currentBackgroundColor = $(highlightElement).css('background-color'),
+                        currentBoxShadow = $(highlightElement).css('box-shadow'),
+                        highlightColour = select ? '0, 0, 255' : '255, 0, 0',
+                        backgroundColour = backgroundFlash ? "rgba(" + highlightColour + ", 0.1)" : currentBackgroundColor,
+                        boxShadowColour = "0px 0px 31px 0px rgba(" + highlightColour + ",0.4)",
+                        highlightFlashSettings = {
+                                "background-color": $.Color(backgroundColour),
+                                "box-shadow": boxShadowColour
+                            },
+                        restoreElementSettings = {
+                                "background-color": $.Color(currentBackgroundColor),
+                                "box-shadow": currentBoxShadow
+                            };
+
+                    $(highlightElement).css('outline', selectCss);
+                    (!select || $(highlightElement).addClass(selectClass));
+
+                    $(highlightElement).animate(highlightFlashSettings, 100, function(){
+                            $(this).animate(restoreElementSettings, 500);
+                        });
+                },
+
+                clearHighlighting = function(allElements, select) {
+                    $(allElements).css('outline-width', '0px');
+                    (select && $(allElements).removeClass(selectClass));
+                },
+
                 clickElement = function (subscribeEvent, publishEvent, eventElement, callBackParams) {
+
                     if (callBackParams) {
                         var allElements = callBackParams.allElements;
                     }
-                    var previousElement,
-                        backgroundColor,
-                        boxShadow;
+
                     if ($(eventElement).data('emvt-relative')) {
                         // TODO add scroll to if element not on screen
                         // TODO make this called by message from object?
-                        allElements.css('outline-width', '0px').removeClass(selectClass);
+                        clearHighlighting(allElements, true);
                         setTimeout(function(){
-                            backgroundColor = $(emvt.currentElement.getElement()).css('background-color');
-                            boxShadow = $(emvt.currentElement.getElement()).css('box-shadow');
-                            $(emvt.currentElement.getElement()).css('outline', selectCss).addClass(selectClass);
-                            $(emvt.currentElement.getElement()).animate(
-                                {"background-color": $.Color("rgba(0, 0, 255, 0.1)"),
-                                "box-shadow": "0px 0px 31px 0px rgba(0,0,255,0.4)"},
-                                100, function(){
-                                    $(this).animate(
-                                        {"background-color": $.Color(backgroundColor),
-                                        "box-shadow": boxShadow
-                                        },
-                                        500);
-                            });
+                            highlightFlash(emvt.currentElement.getElement(), true, true);
                         },100);
                     } else if (publishEvent.target === eventElement && !$(eventElement).data('emvt-element')) {
-                        allElements.css('outline-width', '0px').removeClass(selectClass);
-                        boxShadow = $(publishEvent.target).css('box-shadow');
-                        $(publishEvent.target).css('box-shadow', "0px 0px 31px 0px rgba(0,0,255,0.0)");
-                        $(publishEvent.target).css('outline', selectCss).addClass(selectClass);
-                        $(publishEvent.target).animate(
-                            {"box-shadow": "0px 0px 31px 0px rgba(0,0,255,0.4)"},
-                            100, function(){
-                                $(this).animate(
-                                    {"box-shadow": boxShadow},
-                                    500);
-                            });
+                        clearHighlighting(allElements, true);
+                        highlightFlash(publishEvent.target, true, false);
                     }
 
                 },
