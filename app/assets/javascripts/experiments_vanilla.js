@@ -206,24 +206,38 @@ emvt.Subscribe = (function () {
                     }
                 },
 
+                isForbiddenTag = function(element) {
+                    var elementTag = element.prop('tagName'),
+                        forbiddenTags = ['HTML', 'SCRIPT', 'LINK', 'HEAD'],
+                        i;
+
+                    for (i = 0; i < forbiddenTags.length; i++) {
+                        if (forbiddenTags[i] === elementTag) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                },
+
                 getParent = function(){
                     var current = getElement();
-                    return current.parent().prop('tagName') === 'HTML' ? false : current.parent();
+                    return isForbiddenTag(current.parent()) ? false : current.parent();
                 },
 
                 getGrandParent = function(){
                     var current = getElement();
-                    return current.parent().prop('tagName') === 'BODY' ? false : current.parent().parent();
+                    return isForbiddenTag(current.parent().parent()) ? false : current.parent().parent();
                 },
 
                 getNextSibling = function(){
                     var current = getElement();
-                    return current.next().length > 0 ? current.next() : false
+                    return current.next().length > 0 && !isForbiddenTag(current.next()) ? current.next() : false
                 },
 
                 getPreviousSibling = function(){
                     var previousSibling = getElement().prev();
-                    return previousSibling.length > 0 ? previousSibling : false
+                    return previousSibling.length > 0 && !isForbiddenTag(previousSibling) ? previousSibling : false
                 },
 
                 getFirstChild = function(){
@@ -279,16 +293,14 @@ emvt.Subscribe = (function () {
 
                 selectNextSibling = function() {
                     var nextSibling = getNextSibling(),
-                        current = getElement(),
-                        firstSibling = current.siblings().first();
-                    setElement(nextSibling.length > 0 ? nextSibling : firstSibling.length > 0 ? firstSibling : current);
+                        current = getElement();
+                    setElement(nextSibling.length > 0 ? nextSibling : current);
                 },
 
                 selectPreviousSibling = function() {
                     var previousSibling = getPreviousSibling(),
-                        current = getElement(),
-                        lastSibling = current.siblings().last();
-                    setElement(previousSibling.length > 0 ? previousSibling : lastSibling.length > 0 ? lastSibling : current);
+                        current = getElement();
+                    setElement(previousSibling.length > 0 ? previousSibling : current);
                 },
 
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
@@ -313,8 +325,40 @@ emvt.Subscribe = (function () {
 
         emvt.ElementMenu = (function (currentElement, Subscribe, Publish) {
 
-            var selectElement = function(subscribeEvent, publishEvent, eventElement) {
-                    //console.log(currentElement.getElement());
+            var constructId = function (element){
+                    var tagname = '',
+                        id = '',
+                        classes = '';
+
+                    if (element) {
+                        tagname = $(element).prop('tagName').toLowerCase();
+                        id = $(element).attr('id') ? '#' + $(element).attr('id') : '';
+                        classes = $(element)[0].className.replace('emvt_selected-element', '').length > 0
+                            ? '.' + $(element)[0].className.replace(' emvt_selected-element', '').replace(/\s/g, '.')
+                            : '';
+                    }
+
+                    return tagname + id + classes;
+                },
+
+
+                selectElement = function(subscribeEvent, publishEvent, eventElement) {
+                    //setTimeout(function(){
+                        var menu = $('.variate-menu'),
+                            relative = $("li[data-emvt-relative]", menu),
+                            i,
+                            methodName,
+                            id;
+
+                        for (i = 0; i < relative.length; i++) {
+                            methodName = $(relative[i]).data('emvt-relative').replace('select', 'get');
+                            id = constructId(currentElement[methodName]());
+                            $(relative[i]).find('.text').text(id);
+
+                        }
+                    //}, 100);
+
+                    //console.log(relative);
                 },
 
                 selectRelatedElement = $("li", '.variate-menu'),
@@ -327,8 +371,10 @@ emvt.Subscribe = (function () {
                 pubSelectElement = new Publish.init('selectElement', 'click', selectRelatedElement),
 
                 pubHoverElement = new Publish.init('overElement', 'mouseover', hoverMoveElement);
+                pubHoverElement = new Publish.init('overElement', 'click', hoverMoveElement);
 
                 pubHoverElement = new Publish.init('overElement', 'mouseover', hoverRelativeElement);
+                pubHoverElement = new Publish.init('overElement', 'click', hoverRelativeElement);
 
             return {
 
