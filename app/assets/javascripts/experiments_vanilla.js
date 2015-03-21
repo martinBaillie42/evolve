@@ -9,6 +9,7 @@ emvt.Publish = (function () {
 
         if(options) {
             var preventDefault = options.preventDefault || false;
+            //var preventIfAnimated = options.preventIfAnimated || false;
         }
         //console.log(jqueryObject);
         jqueryObject.on(eventType, function(event) {
@@ -54,8 +55,8 @@ emvt.Subscribe = (function () {
 
             var allElements = variateDom.find('*'),
                 body = variateDom.find('body'),
-                hoverCss = '#f00 solid 1px',
-                selectCss = '#00f solid 1px',
+                hoverCss = '#f00 solid 2px',
+                selectCss = '#00f solid 2px',
                 selectClass = 'emvt_selected-element',
                 selectedClass = '.' + selectClass,
 
@@ -70,27 +71,29 @@ emvt.Subscribe = (function () {
                         dataRelative = $(eventElement).data('emvt-relative');
                     //console.log(dataElement);
                     clearHighlighting(allElements, false);
-                    if (dataElement && dataElement.indexOf('move') === 0) {
+                    if (dataElement/* && dataElement.indexOf('move') === 0*/) {
                         if (dataElement === 'moveUp') {
-                            highlightFlash(emvt.currentElement.getGrandParent(), false, false, false);
+                            highlightFlash(emvt.currentElement.getGrandParent(), false, true, true);
                         } else if (dataElement === 'moveDown') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
                         } else if (dataElement === 'moveRight') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
-                            highlightFlash($(emvt.currentElement.getNextSibling()).next(), false, false, false);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
+                            highlightFlash($(emvt.currentElement.getNextSibling()).next(), false, true, true);
                         } else if (dataElement === 'moveLeft') {
-                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, false, false);
-                            highlightFlash($(emvt.currentElement.getPreviousSibling()).prev(), false, false, false);
+                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, true, true);
+                            highlightFlash($(emvt.currentElement.getPreviousSibling()).prev(), false, true, true);
+                        } else if (dataElement === 'current') {
+                            highlightFlash(emvt.currentElement.getElement(), true, true, true);
                         }
                     } else if (dataRelative && dataRelative.indexOf('select') === 0) {
                         if (dataRelative === 'selectParent') {
-                            highlightFlash(emvt.currentElement.getParent(), false, false, false);
+                            highlightFlash(emvt.currentElement.getParent(), false, true, true);
                         } else if (dataRelative === 'selectFirstChild') {
-                            highlightFlash(emvt.currentElement.getFirstChild(), false, false, false);
+                            highlightFlash(emvt.currentElement.getFirstChild(), false, true, true);
                         } else if (dataRelative === 'selectNextSibling') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
                         } else if (dataRelative === 'selectPreviousSibling') {
-                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, false, false);
+                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, true, true);
                         }
                     } else {
                         highlightFlash(publishEvent.target, false, false, false);
@@ -103,7 +106,8 @@ emvt.Subscribe = (function () {
                 },
 
                 highlightFlash = function(highlightElement, select, backgroundFlash, outlineFlash) {
-                    var currentBackgroundColor = $(highlightElement).css('background-color'),
+                    var isAnimated = $(highlightElement).is(':animated'),
+                        currentBackgroundColor = $(highlightElement).css('background-color'),
                         currentBoxShadow = $(highlightElement).css('box-shadow'),
                         highlightColour = select ? '0, 0, 255' : '255, 0, 0',
                         backgroundColour = backgroundFlash ? "rgba(" + highlightColour + ", 0.1)" : currentBackgroundColor,
@@ -117,16 +121,18 @@ emvt.Subscribe = (function () {
                                 "box-shadow": currentBoxShadow
                             };
 
-                    if (select) {
-                        $(highlightElement).css('outline', selectCss).addClass(selectClass);
-                    } else {
-                        $(highlightElement).not(selectedClass).css('outline', hoverCss);
-                    }
+                    if (!isAnimated) {
+                        if (select) {
+                            $(highlightElement).css('outline', selectCss).addClass(selectClass);
+                        } else {
+                            $(highlightElement).not(selectedClass).css('outline', hoverCss);
+                        }
 
-                    if (outlineFlash) {
-                        $(highlightElement).animate(highlightFlashSettings, 100, function(){
-                            $(this).animate(restoreElementSettings, 500);
-                        });
+                        if (outlineFlash) {
+                            $(highlightElement).animate(highlightFlashSettings, 100, function(){
+                                $(this).animate(restoreElementSettings, 500);
+                            });
+                        }
                     }
 
                 },
@@ -273,7 +279,10 @@ emvt.Subscribe = (function () {
                     "element":  function (direction) {
                                     var current = getElement(),
                                         dir = direction.replace('move', '').toLowerCase();
-                                    move[dir](current);
+                                    if(move[dir]) {
+                                        move[dir](current);
+                                    }
+
                                 }
                 },
 
@@ -343,22 +352,28 @@ emvt.Subscribe = (function () {
 
 
                 selectElement = function(subscribeEvent, publishEvent, eventElement) {
-                    //setTimeout(function(){
-                        var menu = $('.variate-menu'),
-                            relative = $("li[data-emvt-relative]", menu),
-                            i,
-                            methodName,
-                            id;
+                    var menu = $('.variate-menu'),
+                        relative = $("li[data-emvt-relative]", menu),
+                        move = $("li[data-emvt-element]", menu),
+                        moveMap = {"current": "getElement", "moveUp": "getGrandParent", "moveDown": "getNextSibling", "moveLeft": "getPreviousSibling", "moveRight": "getNextSibling"},
+                        i,
+                        methodName,
+                        id;
 
-                        for (i = 0; i < relative.length; i++) {
-                            methodName = $(relative[i]).data('emvt-relative').replace('select', 'get');
-                            id = constructId(currentElement[methodName]());
-                            $(relative[i]).find('.text').text(id);
+                    for (i = 0; i < relative.length; i++) {
+                        methodName = $(relative[i]).data('emvt-relative').replace('select', 'get');
+                        id = constructId(currentElement[methodName]());
+                        $(relative[i]).find('.text').text(id);
 
-                        }
-                    //}, 100);
+                    }
 
-                    //console.log(relative);
+                    for (i = 0; i < move.length; i++) {
+                        methodName = $(move[i]).data('emvt-element');
+                        methodName = moveMap[methodName];
+                        id = constructId(currentElement[methodName]());
+                        $(move[i]).find('.text').text(id);
+
+                    }
                 },
 
                 selectRelatedElement = $("li", '.variate-menu'),

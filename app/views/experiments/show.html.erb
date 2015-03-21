@@ -48,17 +48,20 @@
 
 <!-- TODO Aria classes? -->
 <ul class="dropdown-menu variate-menu" draggable="true">
-  <li class="dropdown-header">Select Relative</li> <!-- Header -->
-  <li data-emvt-relative="selectParent"><span class="glyphicon glyphicon-menu-up"></span> <span class="text">Parent</span></li>
-  <li data-emvt-relative="selectFirstChild"><span class="glyphicon glyphicon-menu-down"></span> <span class="text">FirstChild</span></li>
-  <li data-emvt-relative="selectNextSibling"><span class="glyphicon glyphicon-menu-right"></span> <span class="text">Next Sibling</span></li>
-  <li data-emvt-relative="selectPreviousSibling"><span class="glyphicon glyphicon-menu-left"></span> <span class="text">Previous Sibling</span></li>
+  <li class="dropdown-header">Current Element</li> <!-- Header -->
+  <li data-emvt-element="current"><span class="glyphicon glyphicon-stop"></span> <span class="text">Current</span></li>
   <li class="divider"></li>
-  <li class="dropdown-header">Move</li> <!-- Header -->
-  <li data-emvt-element="moveUp"><span class="glyphicon glyphicon-menu-up"></span> <span class="text">Up</span></li>
-  <li data-emvt-element="moveDown"><span class="glyphicon glyphicon-menu-down"></span> <span class="text">Down</span></li>
-  <li data-emvt-element="moveRight"><span class="glyphicon glyphicon-menu-right"></span> <span class="text">Right </span></li>
-  <li data-emvt-element="moveLeft"><span class="glyphicon glyphicon-menu-left"></span> <span class="text">Left</span></li>
+  <li class="dropdown-header">Select Relative</li> <!-- Header -->
+  <li data-emvt-relative="selectParent"><span class="glyphicon glyphicon-triangle-top"></span> <span class="text">Parent</span></li>
+  <li data-emvt-relative="selectFirstChild"><span class="glyphicon glyphicon-triangle-bottom"></span> <span class="text">FirstChild</span></li>
+  <li data-emvt-relative="selectNextSibling"><span class="glyphicon glyphicon-triangle-right"></span> <span class="text">Next Sibling</span></li>
+  <li data-emvt-relative="selectPreviousSibling"><span class="glyphicon glyphicon-triangle-left"></span> <span class="text">Previous Sibling</span></li>
+  <li class="divider"></li>
+  <li class="dropdown-header">Move Element</li> <!-- Header -->
+  <li data-emvt-element="moveUp"><span class="glyphicon glyphicon-arrow-up"></span> <span class="text">Into Grandparent</span></li>
+  <li data-emvt-element="moveDown"><span class="glyphicon glyphicon-share-alt"></span> <span class="text">Into Next Sibling</span></li>
+  <li data-emvt-element="moveRight"><span class="glyphicon glyphicon-arrow-right"></span> <span class="text">After Next Sibling </span></li>
+  <li data-emvt-element="moveLeft"><span class="glyphicon glyphicon-arrow-left"></span> <span class="text">Before Previous Sibling</span></li>
 </ul>
 <!--
 <li><a tabindex="-1" href="#">text</a></li> &lt;!&ndash; Normal menu item &ndash;&gt;
