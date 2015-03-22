@@ -12,10 +12,48 @@
   opacity: 0.9;
   filter: alpha(opacity=9); // For <= IE8;
 
+  ul {
+    padding-left: 0;
+  }
+
   li {
     white-space: nowrap;
-  }:hover {
+    ul {
+      font-size: 14px;
+      color: #333;
+    }
+  }
+
+  li:hover {
     background-color: #f5f5f5;
+  }
+
+  li.dropdown-header {
+    padding: 0;
+  }
+
+  li.dropdown-header:hover {
+    background-color: #fff;
+  }
+
+  li.dropdown-header > span {
+    display: block;
+    padding: 3px 20px;
+  }
+
+  li.dropdown-header > span:hover {
+    background-color: #f5f5f5;
+  }
+
+  label {
+    width: 133px;
+    text-align: right;
+    margin-right: 1em;
+    font-weight: normal;
+  }
+
+  input {
+    width: 128px;
   }
 
 }
