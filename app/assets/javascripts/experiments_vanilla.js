@@ -17,15 +17,26 @@ emvt.Publish = (function () {
 
         if(options) {
             var preventDefault = options.preventDefault || false;
-            //var preventIfAnimated = options.preventIfAnimated || false;
+            var delegateElement = options.delegateElement || false;
         }
 
-        jqueryObject.on(eventType, function(event) {
-            if (preventDefault) {
-                event.preventDefault();
-            }
-            $.publish(message, [event, this]);
-        });
+        if (delegateElement) {
+            jqueryObject.on(eventType, delegateElement, function(event) {
+                if (preventDefault) {
+                    event.preventDefault();
+                }
+                $.publish(message, [event, this]);
+            });
+        } else {
+            jqueryObject.on(eventType, function(event) {
+                if (preventDefault) {
+                    event.preventDefault();
+                }
+                $.publish(message, [event, this]);
+            });
+        }
+
+
     }
 
     return {
@@ -77,30 +88,29 @@ emvt.Subscribe = (function () {
                 overElement = function  (subscribeEvent, publishEvent, eventElement, allElements) {
                     var dataElement = $(eventElement).data('emvt-element'),
                         dataRelative = $(eventElement).data('emvt-relative');
-                    console.log(dataElement);
+
                     //clearHighlighting(allElements, false);
                     if (dataElement /*&& dataElement.indexOf('move') === 0*/) {
                         if (dataElement === 'moveUp') {
-                            console.log(10, dataElement);
-                            highlightFlash(emvt.currentElement.getGrandParent(), false, true, true);
+                            highlightFlash(emvt.currentElement.getGrandParent(), false, false, false);
                         } else if (dataElement === 'moveDown') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
                         } else if (dataElement === 'moveRight') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
                         } else if (dataElement === 'moveLeft') {
-                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, true, true);
+                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, false, false);
                         } else if (dataElement === 'current') {
-                            highlightFlash(emvt.currentElement.getElement(), true, true, true);
+                            highlightFlash(emvt.currentElement.getElement(), true, false, false);
                         }
                     } else if (dataRelative && dataRelative.indexOf('select') === 0) {
                         if (dataRelative === 'selectParent') {
-                            highlightFlash(emvt.currentElement.getParent(), false, true, true);
+                            highlightFlash(emvt.currentElement.getParent(), false, false, false);
                         } else if (dataRelative === 'selectFirstChild') {
-                            highlightFlash(emvt.currentElement.getFirstChild(), false, true, true);
+                            highlightFlash(emvt.currentElement.getFirstChild(), false, false, false);
                         } else if (dataRelative === 'selectNextSibling') {
-                            highlightFlash(emvt.currentElement.getNextSibling(), false, true, true);
+                            highlightFlash(emvt.currentElement.getNextSibling(), false, false, false);
                         } else if (dataRelative === 'selectPreviousSibling') {
-                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, true, true);
+                            highlightFlash(emvt.currentElement.getPreviousSibling(), false, false, false);
                         }
                     } else {
                         highlightFlash(publishEvent.target, false, false, false);
@@ -160,20 +170,16 @@ emvt.Subscribe = (function () {
                         var allElements = callBackParams.allElements;
                     }
 
-                    console.log(1);
-
                     if ($(eventElement).data('emvt-relative')) {
-                        console.log(2);
                         clearHighlighting(allElements, true);
                         setTimeout(function(){
-                            highlightFlash(emvt.currentElement.getElement(), true, true, true);
+                            highlightFlash(emvt.currentElement.getElement(), true, false, false);
                         },100);
                     } else if (publishEvent.target === eventElement && !$(eventElement).data('emvt-element')) {
                         // TODO add scroll to if element not on screen
                         // TODO make this called by message from object?
-                        console.log(3);
                         clearHighlighting(allElements, true);
-                        highlightFlash(publishEvent.target, true, false, true);
+                        highlightFlash(publishEvent.target, true, false, false);
                     }
 
                 },
@@ -222,7 +228,6 @@ emvt.Subscribe = (function () {
                     if ($(eventElement).data('emvt-relative')) {
                         selectRelation($(eventElement).data('emvt-relative'));
                     } else if ($(eventElement).data('emvt-element')) {
-                        console.log(13);
                         move.element($(eventElement).data('emvt-element'));
                     } else if (eventElement === publishEvent.target && !$(eventElement).data('emvt-relative') && !$(eventElement).data('emvt-element')) {
                         setElement($(eventElement));
@@ -270,7 +275,6 @@ emvt.Subscribe = (function () {
 
                 move = {
                     "up":       function (current) {
-                                    console.log(12);
                                     var grandParent = getGrandParent();
                                     if(grandParent) {
                                         current.detach().prependTo(grandParent);
@@ -398,7 +402,7 @@ emvt.Subscribe = (function () {
             };
         })(emvt.currentElement);
 
-        emvt.ElementMenuUI = (function () {
+        emvt.ElementMenuUI = (function (Publish) {
 
             var menuItems = function (items) {
                     var i,
@@ -420,19 +424,34 @@ emvt.Subscribe = (function () {
 
                 menuGroup = function (heading, collapsed, items) {
                     var mItems = menuItems(items),
-                        collapsed = collapsed === true ? '' : 'in';
+                        inClass = collapsed === true ? '' : 'in',
+                        groupId =  'emvt-menu-' + heading,
+                        group = $('#' + groupId);
+
+                        if (group.length > 0) {
+                            inClass = group.hasClass('in') ? 'in' : '';
+                        }
+
                     return  '<li class="dropdown-header" data-emvt="style-group">' + '' +
-                                '<span data-toggle="collapse" data-target="#emvt-menu-' + heading + '">' + heading + '</span>' +
-                                '<ul id="emvt-menu-' + heading + '" class="collapse ' + collapsed + '">' +
+                                '<span data-toggle="collapse" data-target="#' + groupId + '">' + heading + '</span>' +
+                                '<ul id="' + groupId + '" class="collapse ' + inClass + '">' +
                                     mItems +
                                 '</ul>' +
                             '</li>';
-                };
+                },
+
+                menu = $('.variate-menu'),
+                cssValues = '[data-emvt=style-group] input',
+
+
+                pubMenuInputFocus = new Publish.init('menuInputFocus', 'focus', menu, {delegateElement: cssValues}),
+                pubMenuInputKeyup = new Publish.init('menuInputKeyup', 'keyup', menu, {delegateElement: cssValues});
+                //pubMenuInputChange = new Publish.init('menuInputChange', 'change', menu, {delegateElement: cssValues});
 
             return {
                 menuGroup: menuGroup
             };
-        })();
+        })(emvt.Publish);
 
         emvt.ElementMenu = (function (currentElement, Subscribe, Publish, css, menuUI) {
 
@@ -481,7 +500,6 @@ emvt.Subscribe = (function () {
 
                     }
 
-                    console.log(15);
                     for (i = 0; i < move.length; i++) {
                         methodName = $(move[i]).data('emvt-element');
                         methodName = moveMap[methodName];
@@ -519,9 +537,63 @@ emvt.Subscribe = (function () {
 
 
 
-        emvt.variateJquery = (function () {
+        emvt.variateJquery = (function (Subscribe, currentElement) {
 
-        })();
+            var element, property, value,
+
+                setElement = function (elementObj) {
+                    element = elementObj;
+                },
+
+                setProperty = function (cssProperty) {
+                    property = cssProperty;
+                },
+
+                setValue = function (cssValue) {
+                    value = cssValue;
+                },
+
+                getElement = function () {
+                    return element;
+                },
+
+                getProperty = function () {
+                    return property;
+                },
+
+                getValue = function () {
+                    return value;
+                },
+
+                init = function (subscribeEvent, publishEvent, eventElement) {
+
+                    setElement(currentElement.getElement());
+                    setProperty(eventElement.name);
+                    setValue(eventElement.value);
+
+                },
+
+                displayChange = function (cssValue) {
+                    getElement().css(getProperty(), cssValue);
+                },
+
+                saveChange = function () {
+                    var jQueryText = "$('" + getElement() + "')";
+                    console.log(jQueryText);
+                },
+
+                generate = function (subscribeEvent, publishEvent, eventElement) {
+                    var editedValue = eventElement.value;
+                    displayChange(editedValue);
+                    saveChange(editedValue);
+                },
+
+
+            subMenuInputFocus = new Subscribe.init('menuInputFocus', init),
+            subMenuInputKeyup = new Subscribe.init('menuInputKeyup', generate);
+            //subMenuInputChange = new Subscribe.init('menuInputChange', generate);
+
+        })(emvt.Subscribe, emvt.currentElement);
 
 
 
