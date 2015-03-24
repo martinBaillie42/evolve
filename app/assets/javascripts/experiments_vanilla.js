@@ -334,11 +334,14 @@ emvt.Subscribe = (function () {
                     setElement(previousSibling.length > 0 ? previousSibling : current);
                 },
 
-                getElementIdClasses = function (element){
-                    var element = element || getElement(),
-                        tagname = '',
+                getElementIdClasses = function (element, noDefault) {
+                    var tagname = '',
                         id = '',
                         classes = '';
+
+                    if (!noDefault && !element) {
+                        element = getElement();
+                    }
 
                     if (element) {
                         tagname = $(element).prop('tagName').toLowerCase();
@@ -497,7 +500,7 @@ emvt.Subscribe = (function () {
 
                     for (i = 0; i < relative.length; i++) {
                         methodName = $(relative[i]).data('emvt-relative').replace('select', 'get');
-                        id = currentElement.getElementIdClasses(currentElement[methodName]());
+                        id = currentElement.getElementIdClasses(currentElement[methodName](), true);
                         $(relative[i]).find('.text').text(id);
 
                     }
@@ -505,7 +508,7 @@ emvt.Subscribe = (function () {
                     for (i = 0; i < move.length; i++) {
                         methodName = $(move[i]).data('emvt-element');
                         methodName = moveMap[methodName];
-                        id = currentElement.getElementIdClasses(currentElement[methodName]());
+                        id = currentElement.getElementIdClasses(currentElement[methodName](), true);
                         $(move[i]).find('.text').text(id);
 
                     }
