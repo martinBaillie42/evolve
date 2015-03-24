@@ -334,6 +334,23 @@ emvt.Subscribe = (function () {
                     setElement(previousSibling.length > 0 ? previousSibling : current);
                 },
 
+                getElementIdClasses = function (element){
+                    var element = element || getElement(),
+                        tagname = '',
+                        id = '',
+                        classes = '';
+
+                    if (element) {
+                        tagname = $(element).prop('tagName').toLowerCase();
+                        id = $(element).attr('id') ? '#' + $(element).attr('id') : '';
+                        classes = $(element)[0].className.replace('emvt_selected-element', '').length > 0
+                            ? '.' + $(element)[0].className.replace(' emvt_selected-element', '').replace(/\s/g, '.')
+                            : '';
+                    }
+
+                    return tagname + id + classes;
+                },
+
                 subSelectElement = new Subscribe.init('selectElement', selectElement);
 
 
@@ -349,7 +366,8 @@ emvt.Subscribe = (function () {
                 getParent: getParent,
                 getNextSibling: getNextSibling,
                 getPreviousSibling: getPreviousSibling,
-                getFirstChild: getFirstChild
+                getFirstChild: getFirstChild,
+                getElementIdClasses: getElementIdClasses
             };
         })(emvt.Subscribe, emvt.variateDom);
 
@@ -455,23 +473,7 @@ emvt.Subscribe = (function () {
 
         emvt.ElementMenu = (function (currentElement, Subscribe, Publish, css, menuUI) {
 
-            var constructId = function (element){
-                    var tagname = '',
-                        id = '',
-                        classes = '';
-
-                    if (element) {
-                        tagname = $(element).prop('tagName').toLowerCase();
-                        id = $(element).attr('id') ? '#' + $(element).attr('id') : '';
-                        classes = $(element)[0].className.replace('emvt_selected-element', '').length > 0
-                            ? '.' + $(element)[0].className.replace(' emvt_selected-element', '').replace(/\s/g, '.')
-                            : '';
-                    }
-
-                    return tagname + id + classes;
-                },
-
-                displayStyles = function (element) {
+            var displayStyles = function (element) {
                     var styles = css.getStylesAndValues(element),
                         menu = $('.variate-menu'),
                         i,
@@ -495,7 +497,7 @@ emvt.Subscribe = (function () {
 
                     for (i = 0; i < relative.length; i++) {
                         methodName = $(relative[i]).data('emvt-relative').replace('select', 'get');
-                        id = constructId(currentElement[methodName]());
+                        id = currentElement.getElementIdClasses(currentElement[methodName]());
                         $(relative[i]).find('.text').text(id);
 
                     }
@@ -503,7 +505,7 @@ emvt.Subscribe = (function () {
                     for (i = 0; i < move.length; i++) {
                         methodName = $(move[i]).data('emvt-element');
                         methodName = moveMap[methodName];
-                        id = constructId(currentElement[methodName]());
+                        id = currentElement.getElementIdClasses(currentElement[methodName]());
                         $(move[i]).find('.text').text(id);
 
                     }
@@ -577,8 +579,9 @@ emvt.Subscribe = (function () {
                     getElement().css(getProperty(), cssValue);
                 },
 
-                saveChange = function () {
-                    var jQueryText = "$('" + getElement() + "')";
+                saveChange = function (cssValue) {
+                    var jQueryText = "$('" + currentElement.getElementIdClasses() + "')" +
+                                        ".css('" + getProperty() + "', '" + cssValue + "');";
                     console.log(jQueryText);
                 },
 
@@ -595,9 +598,19 @@ emvt.Subscribe = (function () {
 
         })(emvt.Subscribe, emvt.currentElement);
 
+        emvt.EditedElement = function (elementIdClasses, cssProperty, cssValue) {
+            // Use the unique id as a key
+            this.elementIdClasses = elementIdClasses;
+            this.cssProperty = cssProperty;
+            this.cssValue = cssValue;
+        };
 
+        emvt.EditedElement.prototype.classMethod = function () {
+            console.log(this.elementIdClasses);
+        }
 
-
+        var ee = new emvt.EditedElement('hello', 'world', '!');
+        ee.classMethod();
 
     });
 })();
