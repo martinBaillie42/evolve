@@ -337,6 +337,8 @@ emvt.Subscribe = (function () {
                 getElementIdClasses = function (element, noDefault) {
                     var tagname = '',
                         id = '',
+                        classesArr = '',
+                        i,
                         classes = '';
 
                     if (!noDefault && !element) {
@@ -346,9 +348,19 @@ emvt.Subscribe = (function () {
                     if (element) {
                         tagname = $(element).prop('tagName').toLowerCase();
                         id = $(element).attr('id') ? '#' + $(element).attr('id') : '';
-                        classes = $(element)[0].className.replace('emvt_selected-element', '').length > 0
-                            ? '.' + $(element)[0].className.replace(' emvt_selected-element', '').replace(/\s/g, '.')
-                            : '';
+                        //classes = $(element)[0].className.replace('emvt_selected-element', '').length > 0
+                        //    ? '.' + $(element)[0].className.replace(' emvt_selected-element', '').replace(/\s/g, '.')
+                        //    : '';
+
+                        if ($(element)[0].className.length > 0) {
+                            classesArr = $(element)[0].className.split(' ');
+                            for(i = 0; i < classesArr.length; i++) {
+                                if ( classesArr[i].indexOf(' ') === -1 && classesArr[i].indexOf('emvt_selected-element') === -1 && classesArr[i].length > 0) {
+                                    classes += '.' + classesArr[i];
+                                }
+                            }
+
+                        }
                     }
 
                     return tagname + id + classes;
@@ -546,6 +558,8 @@ emvt.Subscribe = (function () {
 
             var element, property, value,
 
+                variateDom = emvt.variateDom,
+
                 setElement = function (elementObj) {
                     element = elementObj;
                 },
@@ -570,6 +584,31 @@ emvt.Subscribe = (function () {
                     return value;
                 },
 
+                constructUniqueId = function (element, selector) {
+                    var parent,
+                        parentSelector,
+                        newSelector,
+                        siblingNumber;
+
+                    if (selector.indexOf(' ') === -1) {
+                        siblingNumber = element.index() + 1;
+                        selector += ':nth-child(' +  siblingNumber + ')';
+                    }
+
+                    if (variateDom.find(selector).length === 1 || element[0].tagName === 'HTML') {
+                        return selector;
+                    } else {
+                        parent = element.parent();
+                        siblingNumber = parent.index() + 1;
+                        parentSelector = currentElement.getElementIdClasses(parent) + ':nth-child(' +  siblingNumber + ')';
+                        newSelector = parentSelector + ' > ' + selector;
+                        return constructUniqueId(parent, newSelector);
+                    }
+
+
+
+                },
+
                 init = function (subscribeEvent, publishEvent, eventElement) {
 
                     setElement(currentElement.getElement());
@@ -582,16 +621,19 @@ emvt.Subscribe = (function () {
                     getElement().css(getProperty(), cssValue);
                 },
 
-                saveChange = function (cssValue) {
-                    var jQueryText = "$('" + currentElement.getElementIdClasses() + "')" +
+                recordChange = function (cssValue) {
+                    var uniqueSelector = constructUniqueId( currentElement.getElement(), currentElement.getElementIdClasses()),
+                        jQueryText = "$('" +  uniqueSelector + "')" +
                                         ".css('" + getProperty() + "', '" + cssValue + "');";
-                    console.log(jQueryText);
+
+                        console.log(jQueryText);
+
                 },
 
                 generate = function (subscribeEvent, publishEvent, eventElement) {
                     var editedValue = eventElement.value;
                     displayChange(editedValue);
-                    saveChange(editedValue);
+                    recordChange(editedValue);
                 },
 
 
