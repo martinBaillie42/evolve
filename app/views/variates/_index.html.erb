@@ -20,8 +20,7 @@
       <%= glyph 'remove' %>
     <%- end -%>
 
-      <%= form_for variate, html: {method: :update}  do |f| %>
-          <%= f.hidden_field :id %>
+      <%= form_for(variate, html: {method: :patch}, remote: true)  do |f| %>
 
           <%= f.hidden_field :js_code %>
 

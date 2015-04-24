@@ -2,7 +2,7 @@ class VariatesController < ApplicationController
   before_action :set_variate, only: [:show, :edit, :update, :destroy]
   before_action :set_experiment, only: [:show, :edit, :update]
   respond_to :html, :xml, :json
-  respond_to :js, only: :show
+  respond_to :js, only: [:show, :edit, :update]
 
   def index
     @variates = Variate.all
@@ -29,7 +29,10 @@ class VariatesController < ApplicationController
 
   def update
     @variate.update(variate_params)
-    respond_with(@variate)
+    respond_to do |format|
+      format.js { render :nothing => true }
+      format.html { respond_with @variate }
+    end
   end
 
   def destroy
