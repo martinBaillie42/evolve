@@ -18,10 +18,17 @@
 
   li {
     white-space: nowrap;
+    overflow: hidden;
     ul {
       font-size: 14px;
       color: #333;
+      list-style: none;
+
     }
+  }
+
+  span.text {
+    overflow: hidden;
   }
 
   li:hover {

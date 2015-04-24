@@ -657,5 +657,10 @@ emvt.Subscribe = (function () {
         var ee = new emvt.EditedElement('hello', 'world', '!');
         ee.classMethod();
 
+        $('.variate-menu').draggable({
+            addClasses: false
+        });
+
     });
+
 })();
