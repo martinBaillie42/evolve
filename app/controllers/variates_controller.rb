@@ -25,7 +25,7 @@ class VariatesController < ApplicationController
     @variate = Variate.new(variate_params)
     @variate.save
     respond_to do |format|
-      format.js { render :nothing => true }
+      format.js
       format.html { respond_with(@variate)}
     end
   end

@@ -2,7 +2,7 @@
 <div class="page-header">
   <h2><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h2>
 </div>
-<div>
+<div class="variate_list" >
   <%= link_to variate_path(0), :class => 'btn btn-primary', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
       0
   <%- end -%>
@@ -25,15 +25,12 @@
     <%= link_to variate_path(variate), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Delete this Variate?')) }, :class => 'btn btn-danger', :title => "#{ t('.destroy', :default => t('helpers.links.destroy', :default => 'Delete this Variate?')) }" do %>
       <%= glyph 'remove' %>
     <%- end -%>
-
-
-
-
   <% end %>
 
-  <%= link_to new_variate_path(variate: {experiment_id: params[:id], variate_no: @new_variate_no}), remote: true, :class => 'btn btn-m', :title => "#{ t('.new', :default => t("helpers.links.new")) }" do %>
-    <%= glyph 'plus' %>
-  <%- end -%>
-
+  <%= form_for @variate, remote: true, :html => { :class => 'form-horizontal' } do |f| %>
+      <%= f.text_field :experiment_id, :class => 'text_field form-control' %>
+      <%= f.number_field :variate_no, :class => 'text_field form-control' %>
+      <%= f.submit nil, :class => 'btn btn-primary' %>
+  <% end %>
 
 </div>
