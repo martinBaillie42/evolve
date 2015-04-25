@@ -31,7 +31,7 @@
 
   <% end %>
 
-  <%= link_to new_variate_path(variate: {experiment_id: params[:id]}), :class => 'btn btn-m', :title => "#{ t('.new', :default => t("helpers.links.new")) }" do %>
+  <%= link_to new_variate_path(variate: {experiment_id: params[:id], variate_no: @new_variate_no}), remote: true, :class => 'btn btn-m', :title => "#{ t('.new', :default => t("helpers.links.new")) }" do %>
     <%= glyph 'plus' %>
   <%- end -%>
 

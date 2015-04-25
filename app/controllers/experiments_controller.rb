@@ -14,6 +14,7 @@ class ExperimentsController < ApplicationController
 
   def show
     @variates = @experiment.variates
+    @new_variate_no = @variates.last.variate_no + 1
     respond_with(@experiment)
   end
 
