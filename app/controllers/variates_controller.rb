@@ -10,7 +10,10 @@ class VariatesController < ApplicationController
   end
 
   def show
-    respond_with(@variate)
+    respond_to do |format|
+      format.js
+      format.html { respond_with(@variate) }
+    end
   end
 
   def new

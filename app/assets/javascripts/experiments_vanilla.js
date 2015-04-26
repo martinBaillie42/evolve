@@ -67,6 +67,7 @@ emvt.Subscribe = (function () {
 
 
         emvt.variateDom = $('#variate').contents();
+        emvt.clonedVariateDom = $('#variate').clone(true, true);
 
 
 

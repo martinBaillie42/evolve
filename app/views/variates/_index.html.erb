@@ -3,13 +3,13 @@
 <div class="page-header">
   <h2><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h2>
 </div>
-
+<div data-variate="js-code"></div>
   <%= link_to variate_path(0), :class => 'btn btn-primary control', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
       0
   <%- end -%>
   <% @variates.each do |variate| %>
       <div class="variate_button">
-        <%= link_to variate_path(variate), :class => 'btn btn-primary variate_no', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
+        <%= link_to experiment_path(@experiment, :current_variate_no => variate.variate_no), :class => 'btn btn-primary variate_no', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
             <%= variate.variate_no %>
         <%- end -%>
         <%= form_for(variate, html: {method: :patch, class: 'variate'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Save changes to Variate?')) })  do |f| %>

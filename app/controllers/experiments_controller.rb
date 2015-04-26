@@ -16,6 +16,8 @@ class ExperimentsController < ApplicationController
     @variates = @experiment.variates
     @new_variate_no = @variates.empty? ? 1 : @variates.last.variate_no + 1
     @variate = Variate.new({experiment_id: @experiment.id, variate_no: @new_variate_no})
+    debugger
+    @variate_js = @variates[:variate_no =>  experiment_params[:current_variate_no]]
     respond_to do |format|
       format.js
       format.html { respond_with(@experiment) }
@@ -53,7 +55,7 @@ class ExperimentsController < ApplicationController
     end
 
     def experiment_params
-      params.require(:experiment).permit(:property_id, :name, :date_from, :date_to, :live, :page_url, :unique_identifier, :js_code)
+      params.require(:experiment).permit(:property_id, :name, :date_from, :date_to, :live, :page_url, :unique_identifier, :js_code, :current_variate_no)
     end
 
     def set_property
