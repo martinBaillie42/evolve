@@ -30,6 +30,7 @@
   <%= form_for @variate, remote: true, :html => { :class => 'form-horizontal' } do |f| %>
       <%= f.text_field :experiment_id, :class => 'text_field form-control' %>
       <%= f.number_field :variate_no, :class => 'text_field form-control' %>
+      <%= f.text_area :js_code, :class => 'text_field form-control' %>
       <%= f.submit nil, :class => 'btn btn-primary' %>
   <% end %>
 

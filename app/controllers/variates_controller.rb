@@ -2,7 +2,7 @@ class VariatesController < ApplicationController
   before_action :set_variate, only: [:show, :edit, :update, :destroy]
   before_action :set_experiment, only: [:show, :edit, :update]
   respond_to :html, :xml, :json
-  respond_to :js, only: [:show, :edit, :update]
+  respond_to :js, only: [:show, :edit, :update, :create]
 
   def index
     @variates = Variate.all
@@ -24,10 +24,7 @@ class VariatesController < ApplicationController
   def create
     @variate = Variate.new(variate_params)
     @variate.save
-    respond_to do |format|
-      format.js
-      format.html { respond_with(@variate)}
-    end
+    redirect_to :controller => 'experiments', :action => 'show', :id => variate_params[:experiment_id]
   end
 
   def update
