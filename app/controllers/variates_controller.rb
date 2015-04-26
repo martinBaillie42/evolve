@@ -1,8 +1,8 @@
 class VariatesController < ApplicationController
   before_action :set_variate, only: [:show, :edit, :update, :destroy]
-  before_action :set_experiment, only: [:show, :edit, :update]
+  before_action :set_experiment, only: [:show, :edit, :update, :destroy]
   respond_to :html, :xml, :json
-  respond_to :js, only: [:show, :edit, :update, :create]
+  respond_to :js, only: [:show, :edit, :update, :create, :destroy]
 
   def index
     @variates = Variate.all
@@ -37,7 +37,11 @@ class VariatesController < ApplicationController
 
   def destroy
     @variate.destroy
-    respond_with(@variate)
+    respond_to do |format|
+      format.js { redirect_to :controller => 'experiments', :action => 'show', :id => @experiment.id, :status => 303}
+      format.html { respond_with @variate }
+    end
+
   end
 
   private

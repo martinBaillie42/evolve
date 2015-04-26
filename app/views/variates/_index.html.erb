@@ -1,8 +1,9 @@
 <%- model_class = Variate -%>
+<div class="variate_list" >
 <div class="page-header">
   <h2><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h2>
 </div>
-<div class="variate_list" >
+
   <%= link_to variate_path(0), :class => 'btn btn-primary', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
       0
   <%- end -%>
@@ -22,7 +23,7 @@
         <%= glyph 'trash' %>
       <%- end -%>
     <% end %>
-    <%= link_to variate_path(variate), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Delete this Variate?')) }, :class => 'btn btn-danger', :title => "#{ t('.destroy', :default => t('helpers.links.destroy', :default => 'Delete this Variate?')) }" do %>
+    <%= link_to variate_path(variate), :method => :delete, remote: true, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Delete this Variate?')) }, :class => 'btn btn-danger', :title => "#{ t('.destroy', :default => t('helpers.links.destroy', :default => 'Delete this Variate?')) }" do %>
       <%= glyph 'remove' %>
     <%- end -%>
   <% end %>
