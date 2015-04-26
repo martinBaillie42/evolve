@@ -71,7 +71,32 @@ iframe {
   }
 }
 
-form.variate {
-  display:inline;
+.variate_list {
+
+  .variate_button {
+    display: inline-block;
+  }
+
+  .variate_no {
+    border-width: 1px 0 1px 1px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .delete {
+    border-width: 1px 1px 1px 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -4px;
+  }
+
+  form.variate {
+    display:inline;
+    margin-left: -4px;
+    button {
+      border-width: 1px 0;
+      border-radius: 0;
+    }
+  }
 
 }

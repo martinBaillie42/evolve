@@ -4,29 +4,31 @@
   <h2><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h2>
 </div>
 
-  <%= link_to variate_path(0), :class => 'btn btn-primary', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
+  <%= link_to variate_path(0), :class => 'btn btn-primary control', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
       0
   <%- end -%>
   <% @variates.each do |variate| %>
-    <%= link_to variate_path(variate), :class => 'btn btn-primary', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
-        <%= variate.variate_no %>
-    <%- end -%>
-    <%= form_for(variate, html: {method: :patch, class: 'variate'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Save changes to Variate?')) })  do |f| %>
-      <%= f.hidden_field :js_code %>
-      <%= f.button nil, :class => 'btn btn-success' do %>
-          <%= glyph 'floppy-disk' %>
-      <%- end -%>
-    <% end %>
-    <%= form_for(variate, html: {method: :patch, class: 'variate', id: 'variate_delete_js'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Delete all current Variate code?')) })  do |f| %>
-      <%= f.hidden_field :js_code, :value => '' %>
-      <%= f.button nil, :class => 'btn btn-warning' do %>
-        <%= glyph 'trash' %>
-      <%- end -%>
-    <% end %>
-    <%= link_to variate_path(variate), :method => :delete, remote: true, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Delete this Variate?')) }, :class => 'btn btn-danger', :title => "#{ t('.destroy', :default => t('helpers.links.destroy', :default => 'Delete this Variate?')) }" do %>
-      <%= glyph 'remove' %>
-    <%- end -%>
-  <% end %>
+      <div class="variate_button">
+        <%= link_to variate_path(variate), :class => 'btn btn-primary variate_no', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
+            <%= variate.variate_no %>
+        <%- end -%>
+        <%= form_for(variate, html: {method: :patch, class: 'variate'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Save changes to Variate?')) })  do |f| %>
+          <%= f.hidden_field :js_code %>
+          <%= f.button nil, :class => 'btn btn-primary' do %>
+              <%= glyph 'floppy-disk' %>
+          <%- end -%>
+        <% end %>
+        <%= form_for(variate, html: {method: :patch, class: 'variate', id: 'variate_delete_js'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Delete all current Variate code?')) })  do |f| %>
+          <%= f.hidden_field :js_code, :value => '' %>
+          <%= f.button nil, :class => 'btn btn-primary' do %>
+            <%= glyph 'trash' %>
+          <%- end -%>
+        <% end %>
+        <%= link_to variate_path(variate), :method => :delete, remote: true, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Delete this Variate?')) }, :class => 'btn btn-primary delete', :title => "#{ t('.destroy', :default => t('helpers.links.destroy', :default => 'Delete this Variate?')) }" do %>
+          <%= glyph 'remove' %>
+        <%- end -%>
+      </div>
+      <% end %>
 
   <%= form_for @variate, remote: true, :html => { :class => 'form-horizontal' } do |f| %>
       <%= f.text_field :experiment_id, :class => 'text_field form-control' %>
