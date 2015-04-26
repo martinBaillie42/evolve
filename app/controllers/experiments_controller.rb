@@ -14,7 +14,7 @@ class ExperimentsController < ApplicationController
 
   def show
     @variates = @experiment.variates
-    @new_variate_no = @variates.last.variate_no + 1
+    @new_variate_no = @variates.empty? ? 1 : @variates.last.variate_no + 1
     @variate = Variate.new({experiment_id: @experiment.id, variate_no: @new_variate_no})
     respond_to do |format|
       format.js

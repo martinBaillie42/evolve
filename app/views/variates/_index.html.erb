@@ -30,11 +30,13 @@
       </div>
       <% end %>
 
-  <%= form_for @variate, remote: true, :html => { :class => 'form-horizontal' } do |f| %>
-      <%= f.text_field :experiment_id, :class => 'text_field form-control' %>
-      <%= f.number_field :variate_no, :class => 'text_field form-control' %>
-      <%= f.text_area :js_code, :class => 'text_field form-control' %>
-      <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= form_for @variate, remote: true, :html => { :class => 'form-horizontal variate add' } do |f| %>
+      <%= f.hidden_field :experiment_id, :class => 'text_field form-control' %>
+      <%= f.hidden_field :variate_no, :class => 'text_field form-control' %>
+      <%= f.hidden_field :js_code, :class => 'text_field form-control' %>
+      <%= f.button nil, :class => 'btn btn-primary' do %>
+          <%= glyph 'plus' %>
+      <%- end -%>
   <% end %>
 
 </div>
