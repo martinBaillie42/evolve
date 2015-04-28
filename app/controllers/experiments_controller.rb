@@ -3,7 +3,7 @@ class ExperimentsController < ApplicationController
   before_action :set_property, only: [:show, :edit, :update]
   before_action :set_uri_domain, only: [:show]
 
-  respond_to :html, :xml, :json, :js
+  respond_to :html, :xml, :json
 
   # TODO These are viewable even when not logged in. Fix this. Or maybe they're not. confused :-s
 
@@ -16,13 +16,10 @@ class ExperimentsController < ApplicationController
     @variates = @experiment.variates
     @new_variate_no = @variates.empty? ? 1 : @variates.last.variate_no + 1
     @variate = Variate.new({experiment_id: @experiment.id, variate_no: @new_variate_no})
-    debugger
-    @variate_js = @variates[:variate_no =>  experiment_params[:current_variate_no]]
-    respond_to do |format|
-      format.js
-      format.html { respond_with(@experiment) }
-    end
-
+    @current_variate = @variates.find_by(variate_no: cookies[:variate_no])
+    @variate_js = @current_variate[:js_code].gsub!(/\$/, "$('#variate').contents().find")
+    # debugger
+    respond_with(@experiment)
   end
 
   def new
@@ -55,7 +52,7 @@ class ExperimentsController < ApplicationController
     end
 
     def experiment_params
-      params.require(:experiment).permit(:property_id, :name, :date_from, :date_to, :live, :page_url, :unique_identifier, :js_code, :current_variate_no)
+      params.require(:experiment).permit(:property_id, :name, :date_from, :date_to, :live, :page_url, :unique_identifier, :js_code)
     end
 
     def set_property

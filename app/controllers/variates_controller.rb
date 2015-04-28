@@ -10,9 +10,10 @@ class VariatesController < ApplicationController
   end
 
   def show
+    cookies[:variate_no] = @variate.variate_no
     respond_to do |format|
       format.js
-      format.html { respond_with(@variate) }
+      format.html { redirect_to @variate.experiment }
     end
   end
 

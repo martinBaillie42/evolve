@@ -24,6 +24,8 @@ gem 'bootstrap-sass', '3.3.3'
 gem 'bootstrap-sass-extras', '0.0.6'
 # Provides jQuery UI functionality. Included for the draggable function
 gem 'jquery-ui-rails', '5.0.3'
+# Provides jquery cookie functionality
+gem 'jquery-cookie-rails'
 # Access the GA API
 gem 'legato', '0.4.0'
 # Use postgresql as the database for Active Record

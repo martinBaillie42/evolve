@@ -64,12 +64,13 @@ emvt.Subscribe = (function () {
     "use strict"
     $(window).on('load', function () {
 
-
+        console.log(document.referer);
 
         emvt.variateDom = $('#variate').contents();
-        emvt.clonedVariateDom = $('#variate').clone(true, true);
 
-
+        //var variateJs = $.cookie('variate_js').replace("$", "$('#variate').contents().find");
+        //emvt.variateDom.find('body').append("<script>" + variateJs + "</script>");
+        //console.log(variateJs);
 
         emvt.variatePageUI = (function (Subscribe, variateDom) {
 

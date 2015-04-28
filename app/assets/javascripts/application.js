@@ -12,11 +12,11 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require bootstrap-sprockets
 //= require bootstrap-contextmenu
 //= require jquery-ui/draggable
 //= require jquery.color
 //= require jquery.animate-shadow
 //= require tiny-pubsub
+//= require jquery.cookie
 //= require_tree .
