@@ -64,8 +64,6 @@ emvt.Subscribe = (function () {
     "use strict"
     $(window).on('load', function () {
 
-        console.log(document.referer);
-
         emvt.variateDom = $('#variate').contents();
 
         //var variateJs = $.cookie('variate_js').replace("$", "$('#variate').contents().find");
@@ -662,6 +660,8 @@ emvt.Subscribe = (function () {
         $('.variate-menu').draggable({
             addClasses: false
         });
+
+        $('.current_variate_true').addClass('active');
 
     });
 

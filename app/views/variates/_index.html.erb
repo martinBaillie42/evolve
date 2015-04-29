@@ -9,7 +9,8 @@
   <%- end -%>
   <% @variates.each do |variate| %>
       <div class="variate_button">
-        <%= link_to variate_path(variate), :class => 'btn btn-primary variate_no', :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
+
+        <%= link_to variate_path(variate), :class => "btn btn-primary variate_no current_variate_#{variate.variate_no == cookies[:variate_no].to_i}", :title => "#{ t('.show', :default => t('helpers.links.show')) }" do %>
             <%= variate.variate_no %>
         <%- end -%>
         <%= form_for(variate, html: {method: :patch, class: 'variate'}, remote: true, data: { :confirm => t('.confirm', :default => t("helpers.forms.confirm", :default => 'Save changes to Variate?')) })  do |f| %>
