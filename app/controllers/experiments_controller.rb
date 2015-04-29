@@ -16,9 +16,11 @@ class ExperimentsController < ApplicationController
     @variates = @experiment.variates
     @new_variate_no = @variates.empty? ? 1 : @variates.last.variate_no + 1
     @variate = Variate.new({experiment_id: @experiment.id, variate_no: @new_variate_no})
-    @current_variate = @variates.find_by(variate_no: cookies[:variate_no])
-    @variate_js = @current_variate[:js_code].gsub!(/\$/, "$('#variate').contents().find")
-    # debugger
+    @variate_js = ''
+    unless cookies[:variate_no].nil?
+      @current_variate = @variates.find_by(variate_no: cookies[:variate_no])
+      @variate_js = @current_variate[:js_code].gsub!(/\$/, "$('#variate').contents().find")
+    end
     respond_with(@experiment)
   end
 

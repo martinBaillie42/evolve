@@ -234,7 +234,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   # :access_type => 'online' added in effort to prevent error when token expires. May need to be reverted
-  config.omniauth :google_oauth2, ENV['CLIENT_ID'], ENV['CLIENT_SECRET'], {:prompt => "consent select_account", :scope => "email, profile, analytics", :access_type => 'offline'}
+  config.omniauth :google_oauth2, ENV['CLIENT_ID'], ENV['CLIENT_SECRET'], {:prompt => "consent select_account", :scope => "email, profile, analytics", :access_type => 'online'}
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
