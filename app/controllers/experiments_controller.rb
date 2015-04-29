@@ -17,11 +17,17 @@ class ExperimentsController < ApplicationController
     @new_variate_no = @variates.empty? ? 1 : @variates.last.variate_no + 1
     @variate = Variate.new({experiment_id: @experiment.id, variate_no: @new_variate_no})
     @variate_js = ''
-    unless cookies[:variate_no].nil?
-      @current_variate = @variates.find_by(variate_no: cookies[:variate_no])
+    @current_variate = @variates.find_by(variate_no: cookies[:variate_no])
+    begin
       @variate_js = @current_variate[:js_code].gsub!(/\$/, "$('#variate').contents().find")
+    rescue NoMethodError
+      @variate_js = ''
     end
-    respond_with(@experiment)
+    respond_to do |format|
+      format.js
+      format.html { respond_with(@experiment) }
+    end
+
   end
 
   def new
