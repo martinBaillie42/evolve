@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
          :omniauthable, :omniauth_providers => [:google_oauth2]
 
   def self.find_for_google_oauth2(access_token, signed_in_resource=nil)
+
     data = access_token.info
     #  This PermittedUser test could be much nicer - but will come back to this.
     if PermittedUser.where(:email => data["email"]).exists?
