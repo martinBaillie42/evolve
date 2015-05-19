@@ -1,5 +1,6 @@
 class PermittedUsersController < ApplicationController
   before_action :set_permitted_user, only: [:show, :edit, :update, :destroy]
+  before_action :is_user_admin
 
   respond_to :html
 
@@ -43,5 +44,11 @@ class PermittedUsersController < ApplicationController
 
     def permitted_user_params
       params[:permitted_user]
+    end
+
+    def is_user_admin
+      unless current_user.administrator
+        redirect_to(:back)
+      end
     end
 end
