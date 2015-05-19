@@ -1,0 +1,2 @@
+module PermittedUsersHelper
+end

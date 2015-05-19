@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :permitted_users
   get 'proxy_html' => 'proxies#html'
   get 'proxy_ajax' => 'proxies#ajax'
   resources :variates
