@@ -1,6 +1,5 @@
 class PropertiesController < ApplicationController
   # removed destroy, new and edit
-
   respond_to :html, :xml, :json
 
   def index
@@ -27,6 +26,7 @@ class PropertiesController < ApplicationController
       reset_session
     end
     @properties = current_user.properties
+    @is_admin = current_user.administrator
     respond_with(@properties)
   end
 

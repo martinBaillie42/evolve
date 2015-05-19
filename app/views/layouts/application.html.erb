@@ -56,7 +56,9 @@
           <ul class="nav navbar-nav">
             <!--<li class="active"><%= link_to "Link1", '#' %></li>-->
             <!--<li><%= link_to "Link2", '#' %></li>-->
-            <!--<li><%= link_to "Link3", '#' %></li>-->
+            <% if @is_admin %>
+                <li><%= link_to "Link3", '#' %></li>
+            <% end %>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div>
@@ -82,7 +84,7 @@
       </div>
 
       <footer>
-        <%= debug(params) if Rails.env.development? %>
+
         <p>&copy; Birkbeck University 2015</p>
       </footer>
 
